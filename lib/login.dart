@@ -472,7 +472,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                      child: const Text('Autenticação Google'),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            'assets/image/glogo.png', // Substitua pelo caminho da sua imagem
+                            height: 24,
+                            width: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          const Text('Autenticação Google'),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(

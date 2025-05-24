@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:cpf_cnpj_validator/cnpj_validator.dart';
-import 'theme.dart'; // Importe seu arquivo de tema
+import 'theme.dart';
 
 class CadastroScreen extends StatefulWidget {
   const CadastroScreen({Key? key}) : super(key: key);
@@ -24,6 +24,23 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _emailController = TextEditingController();
   String? _errorMessage;
   bool _obscureSenha = true;
+
+  int _currentStep = 0;
+
+  double get _progress {
+    switch (_currentStep) {
+      case 0:
+        return 0.2; // Informações Pessoais
+      case 1:
+        return 0.4; // Documento
+      case 2:
+        return 0.6; // Endereço
+      case 3:
+        return 0.8; // Contato
+      default:
+        return 0.0;
+    }
+  }
 
   Future<void> _cadastrar() async {
     if (_formKey.currentState!.validate()) {
@@ -68,6 +85,40 @@ class _CadastroScreenState extends State<CadastroScreen> {
     }
   }
 
+  Widget _buildStepIndicator(int stepNumber, String title) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                color:
+                    _currentStep >= stepNumber
+                        ? AppColors.button
+                        : Colors.grey[400],
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  (stepNumber + 1).toString(),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +133,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Logo
@@ -98,6 +148,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     color: AppColors.primaryText,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+
+                // Barra de progresso
+                LinearProgressIndicator(
+                  value: _progress,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.button),
                 ),
                 const SizedBox(height: 12),
 
@@ -125,14 +183,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     ),
                   ),
 
-                // Campo de nome
+                // Etapa 1: Informações Pessoais
+                _buildStepIndicator(0, 'Informações Pessoais'),
                 TextFormField(
                   controller: _nomeController,
                   decoration: InputDecoration(
                     labelText: 'Nome completo',
                     hintText: 'Digite seu nome completo',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -146,38 +204,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 16),
-
-                // Campo de CPF/CNPJ
-                TextFormField(
-                  controller: _cpfCnpjController,
-                  decoration: InputDecoration(
-                    labelText: 'CPF ou CNPJ',
-                    hintText: 'Digite seu CPF ou CNPJ',
-                    border: OutlineInputBorder(
-                      // Adiciona a borda
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    prefixIcon: const Icon(Icons.badge),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu CPF ou CNPJ';
-                    }
-                    if (!CPFValidator.isValid(value) &&
-                        !CNPJValidator.isValid(value)) {
-                      return 'CPF ou CNPJ inválido';
-                    }
-                    return null;
+                  onChanged: (value) {
+                    setState(() {
+                      if (_senhaController.text.isNotEmpty) {
+                        _currentStep = 1;
+                      } else {
+                        _currentStep = 0;
+                      }
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de senha
                 TextFormField(
                   controller: _senhaController,
                   obscureText: _obscureSenha,
@@ -185,7 +222,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     labelText: 'Senha',
                     hintText: 'Crie uma senha segura',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -213,17 +249,59 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      if (_nomeController.text.isNotEmpty) {
+                        _currentStep = 1;
+                      } else {
+                        _currentStep = 0;
+                      }
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
 
-                // Campo de CEP
+                // Etapa 2: Documento
+                _buildStepIndicator(1, 'Documento'),
+                TextFormField(
+                  controller: _cpfCnpjController,
+                  decoration: InputDecoration(
+                    labelText: 'CPF ou CNPJ',
+                    hintText: 'Digite seu CPF ou CNPJ',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: const Icon(Icons.badge),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira seu CPF ou CNPJ';
+                    }
+                    if (!CPFValidator.isValid(value) &&
+                        !CNPJValidator.isValid(value)) {
+                      return 'CPF ou CNPJ inválido';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 2;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // Etapa 3: Endereço
+                _buildStepIndicator(2, 'Endereço'),
                 TextFormField(
                   controller: _cepController,
                   decoration: InputDecoration(
                     labelText: 'CEP',
                     hintText: 'Digite seu CEP',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -237,17 +315,19 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 3;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de Rua
                 TextFormField(
                   controller: _ruaController,
                   decoration: InputDecoration(
                     labelText: 'Rua',
                     hintText: 'Digite sua rua',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -263,15 +343,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de Tipo de Logradouro
                 TextFormField(
                   controller: _tipoLogradouroController,
                   decoration: InputDecoration(
                     labelText: 'Tipo de Logradouro',
                     hintText: 'Ex: Rua, Avenida, Travessa',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -287,15 +364,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de Número
                 TextFormField(
                   controller: _numeroController,
                   decoration: InputDecoration(
                     labelText: 'Número',
                     hintText: 'Digite o número',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -312,14 +386,14 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Campo de Telefone 1
+                // Etapa 4: Contato
+                _buildStepIndicator(3, 'Contato'),
                 TextFormField(
                   controller: _telefone1Controller,
                   decoration: InputDecoration(
                     labelText: 'Telefone 1',
                     hintText: 'Digite seu telefone principal',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -333,17 +407,19 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 4;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de Telefone 2
                 TextFormField(
                   controller: _telefone2Controller,
                   decoration: InputDecoration(
                     labelText: 'Telefone 2 (opcional)',
                     hintText: 'Digite seu telefone secundário',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -353,15 +429,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
-                // Campo de Email
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'Digite seu email',
                     border: OutlineInputBorder(
-                      // Adiciona a borda
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
                     ),
@@ -381,10 +454,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: null, // Botão inativo
+                  onPressed: null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.grey[400], // Cor cinza para indicar inatividade
+                    backgroundColor: Colors.grey[400],
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 70,
@@ -395,15 +467,25 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text('Autenticação Google'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/image/glogo.png', // Substitua pelo caminho da sua imagem
+                        height: 24,
+                        width: 24,
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('Autenticação Google'),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
-
-                // Botão de cadastro
                 ElevatedButton(
                   onPressed: _cadastrar,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.button,
+                    foregroundColor: AppColors.buttonText,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     textStyle: const TextStyle(fontSize: 18),
                     shape: RoundedRectangleBorder(
@@ -412,7 +494,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   ),
                   child: const Text('Cadastrar'),
                 ),
-                
               ],
             ),
           ),
