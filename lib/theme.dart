@@ -57,8 +57,6 @@ class AppTheme {
         borderSide: const BorderSide(color: AppColors.shadow),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.button),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),

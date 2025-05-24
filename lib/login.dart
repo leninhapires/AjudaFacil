@@ -482,7 +482,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         foregroundColor: AppColors.buttonText,
                         padding: const EdgeInsets.symmetric(
                           vertical: 24,
-                          horizontal: 90,
+                          horizontal: 135,
                         ),
                         textStyle: const TextStyle(fontSize: 20),
                         shape: RoundedRectangleBorder(
