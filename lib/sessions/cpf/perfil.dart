@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'ajuda.dart';
+import 'cursos.dart';
+import 'doacoes.dart';
+import 'config.dart';
 import '../../theme.dart';
+import 'forumcpf.dart';
+import 'home.dart';
+
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({Key? key}) : super(key: key);
@@ -48,16 +55,11 @@ class _PerfilPageState extends State<PerfilPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('MEU PERFIL'),
+        title: const Text('AJUDA FÁCIL'),
         backgroundColor: AppColors.button,
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _salvarAlteracoes,
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
@@ -380,6 +382,111 @@ class _PerfilPageState extends State<PerfilPage> {
           ],
         );
       },
+    );
+  }
+Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: AppColors.button),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'AJUDA FÁCIL',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Bem-vindo, Usuário!',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home, color: AppColors.button),
+            title: const Text('Início'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePageCpf()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person, color: AppColors.button),
+            title: const Text('Perfil'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const PerfilPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.school, color: AppColors.button),
+            title: const Text('Cursos'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const CursosPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
+            title: const Text('Doações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const DoacoesPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.forum, color: AppColors.button),
+            title: const Text('Fórum'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ForumPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings, color: AppColors.button),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app, color: AppColors.button),
+            title: const Text('Sair'),
+            onTap: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

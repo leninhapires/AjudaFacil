@@ -5,6 +5,7 @@ import 'ajuda.dart';
 import 'config.dart';
 import 'doacoes.dart';
 import 'perfil.dart';
+import 'forumcpf.dart';
 
 class CursosPage extends StatelessWidget {
   const CursosPage({Key? key}) : super(key: key);
@@ -13,8 +14,9 @@ class CursosPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('CURSOS DISPONÍVEIS'),
+        title: const Text('AJUDA FÁCIL'),
         backgroundColor: AppColors.button,
         centerTitle: true,
       ),
@@ -154,4 +156,140 @@ class CursosPage extends StatelessWidget {
       },
     );
   }
-}
+}Widget _buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
+      ],
+      currentIndex: 1, // Índice do item ativo (Início)
+      selectedItemColor: AppColors.button,
+      unselectedItemColor: Colors.grey,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilPage()),
+            );
+            break;
+          case 1:
+            // Já está na tela inicial
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaPage()),
+            );
+            break;
+        }
+      },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: AppColors.button),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'AJUDA FÁCIL',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Bem-vindo, Usuário!',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home, color: AppColors.button),
+            title: const Text('Início'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePageCpf()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person, color: AppColors.button),
+            title: const Text('Perfil'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const PerfilPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.school, color: AppColors.button),
+            title: const Text('Cursos'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const CursosPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
+            title: const Text('Doações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const DoacoesPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.forum, color: AppColors.button),
+            title: const Text('Fórum'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ForumPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings, color: AppColors.button),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app, color: AppColors.button),
+            title: const Text('Sair'),
+            onTap: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+          ),
+        ],
+      ),
+    );
+  }

@@ -4,7 +4,6 @@ import 'ajuda.dart';
 import 'cursos.dart';
 import 'doacoes.dart';
 import 'config.dart';
-import 'package:flutter_application_1/furum.dart';
 import '../../theme.dart';
 import 'forumcpf.dart';
 
@@ -61,7 +60,10 @@ class HomePageCpf extends StatelessWidget {
               icon: Icons.search,
               color: cardColors[0],
               onPressed: () {
-                // Ação para buscar ajuda
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AjudaPage()),
+                );
               },
             ),
             const SizedBox(height: 16),
@@ -74,7 +76,10 @@ class HomePageCpf extends StatelessWidget {
               icon: Icons.volunteer_activism,
               color: cardColors[1],
               onPressed: () {
-                // Ação para fazer doação
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const DoacoesPage()),
+                );
               },
             ),
             const SizedBox(height: 16),
@@ -87,13 +92,101 @@ class HomePageCpf extends StatelessWidget {
               icon: Icons.notifications,
               color: cardColors[2],
               onPressed: () {
-                // Ação para alertas
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Alertas'),
+                    content: const Text('Nenhum alerta no momento.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
             const SizedBox(height: 24),
             
-            // Prévia do fórum
-            const ForumPreview(),
+            // Prévia do Fórum
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'FÓRUM DA COMUNIDADE',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Participe das discussões com outros membros:',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    
+                    // Tópico de exemplo 1
+                    ListTile(
+                      leading: const CircleAvatar(child: Text('M')),
+                      title: const Text('Como ajudar pessoas em situação de rua?'),
+                      subtitle: const Text('24 respostas • 2 horas atrás'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ForumPage()),
+                        );
+                      },
+                    ),
+                    
+                    // Tópico de exemplo 2
+                    ListTile(
+                      leading: const CircleAvatar(child: Text('J')),
+                      title: const Text('Doações de alimentos - Melhores práticas'),
+                      subtitle: const Text('15 respostas • 5 horas atrás'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ForumPage()),
+                        );
+                      },
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Botão para acessar o fórum completo
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ForumPage()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.button,
+                          foregroundColor: AppColors.buttonText,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
+                        child: const Text('Acessar o Fórum Completo'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -178,7 +271,7 @@ class HomePageCpf extends StatelessWidget {
       onTap: (int index) {
         switch (index) {
           case 0:
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const PerfilPage()),
             );
@@ -187,7 +280,7 @@ class HomePageCpf extends StatelessWidget {
             // Já está na tela inicial
             break;
           case 2:
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AjudaPage()),
             );
@@ -240,7 +333,7 @@ class HomePageCpf extends StatelessWidget {
             title: const Text('Perfil'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const PerfilPage()),
               );
@@ -251,7 +344,7 @@ class HomePageCpf extends StatelessWidget {
             title: const Text('Cursos'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const CursosPage()),
               );
@@ -262,7 +355,7 @@ class HomePageCpf extends StatelessWidget {
             title: const Text('Doações'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const DoacoesPage()),
               );
@@ -273,7 +366,7 @@ class HomePageCpf extends StatelessWidget {
             title: const Text('Fórum'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumPage()),
               );
@@ -284,11 +377,9 @@ class HomePageCpf extends StatelessWidget {
             title: const Text('Configurações'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ConfiguracoesPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
               );
             },
           ),
@@ -297,8 +388,7 @@ class HomePageCpf extends StatelessWidget {
             leading: Icon(Icons.exit_to_app, color: AppColors.button),
             title: const Text('Sair'),
             onTap: () {
-              // Adicione a lógica de logout aqui
-              Navigator.pop(context);
+              Navigator.popUntil(context, (route) => route.isFirst);
             },
           ),
         ],
