@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:cpf_cnpj_validator/cnpj_validator.dart';
 import 'theme.dart';
@@ -18,8 +21,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _cpfCnpjController = TextEditingController();
   final _senhaController = TextEditingController();
   final _cepController = TextEditingController();
-  final _ruaController = TextEditingController();
   final _tipoLogradouroController = TextEditingController();
+  final _enderecoController = TextEditingController();
   final _numeroController = TextEditingController();
   final _telefone1Controller = TextEditingController();
   final _telefone2Controller = TextEditingController();
@@ -27,46 +30,25 @@ class _CadastroScreenState extends State<CadastroScreen> {
   String? _errorMessage;
   bool _obscureSenha = true;
   bool _isCNPJ = false;
-  String _nomeLabel = 'Nome completo'; // Valor inicial do label
+  String _nomeLabel = 'Nome completo';
 
   int _currentStep = 0;
+  bool _redirected = false;
 
   double get _progress {
-    switch (_currentStep) {
-      case 0:
-        return 0.2;
-      case 1:
-        return 0.4;
-      case 2:
-        return 0.6;
-      case 3:
-        return 0.8;
-      default:
-        return 0.0;
-    }
+    // Ajuste para 10 etapas (campos principais)
+    return (_currentStep / 9).clamp(0.0, 1.0);
   }
 
   Future<void> _cadastrar() async {
     if (_formKey.currentState!.validate()) {
-      String nome = _nomeController.text;
       String cpfCnpj = _cpfCnpjController.text;
-      String senha = _senhaController.text;
-      String cep = _cepController.text;
-      String rua = _ruaController.text;
-      String tipoLogradouro = _tipoLogradouroController.text;
-      String numero = _numeroController.text;
-      String telefone1 = _telefone1Controller.text;
-      String telefone2 = _telefone2Controller.text;
-      String email = _emailController.text;
-
       if (!CPFValidator.isValid(cpfCnpj) && !CNPJValidator.isValid(cpfCnpj)) {
         setState(() {
           _errorMessage = "CPF ou CNPJ inválido!";
         });
         return;
       }
-
-      print('Cadastro bem-sucedido!');
       if (_isCNPJ) {
         Navigator.pushReplacement(
           context,
@@ -113,6 +95,40 @@ class _CadastroScreenState extends State<CadastroScreen> {
         const SizedBox(height: 8),
       ],
     );
+  }
+
+  void _handleCpfCnpjChange(String value) {
+    bool isCnpjValid = CNPJValidator.isValid(value) && value.length == 14;
+    bool isCpfValid = CPFValidator.isValid(value) && value.length == 11;
+
+    setState(() {
+      _isCNPJ = isCnpjValid;
+      _nomeLabel = _isCNPJ ? 'Nome da Instituição' : 'Nome completo';
+      _currentStep = 1;
+      if (!isCnpjValid && !isCpfValid) {
+        _redirected =
+            false; // Permite novo redirecionamento se o campo for alterado
+      }
+    });
+
+    // Redirecionamento fora do setState
+    if (isCnpjValid && !_redirected) {
+      _redirected = true;
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePageCnpj()),
+        );
+      });
+    } else if (isCpfValid && !_redirected) {
+      _redirected = true;
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePageCpf()),
+        );
+      });
+    }
   }
 
   @override
@@ -172,6 +188,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 _buildStepIndicator(0, 'Documento'),
                 TextFormField(
                   controller: _cpfCnpjController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'CPF ou CNPJ',
                     hintText: 'Digite seu CPF ou CNPJ',
@@ -195,35 +213,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                   onChanged: (value) {
                     setState(() {
-                      // Se for CNPJ válido e 14 dígitos, muda label e redireciona
-                      if (CNPJValidator.isValid(value) && value.length == 14) {
-                        _isCNPJ = true;
-                        _nomeLabel = 'Nome da Instituição';
-                        // Redireciona para HomePageCnpj
-                        Future.microtask(() {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const HomePageCnpj(),
-                            ),
-                          );
-                        });
-                      } else {
-                        // Mantém como CPF
-                        _isCNPJ = false;
-                        _nomeLabel = 'Nome completo';
-                        // Redireciona para HomePageCpf se for CPF válido e 11 dígitos
-                        if (CPFValidator.isValid(value) && value.length == 11) {
-                          Future.microtask(() {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const HomePageCpf(),
-                              ),
-                            );
-                          });
-                        }
-                      }
+                      bool isCnpjValid =
+                          CNPJValidator.isValid(value) && value.length == 14;
+                      _isCNPJ = isCnpjValid;
+                      _nomeLabel =
+                          _isCNPJ ? 'Nome da Instituição' : 'Nome completo';
+                      _currentStep = 1;
                     });
                   },
                 ),
@@ -232,7 +227,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 TextFormField(
                   controller: _nomeController,
                   decoration: InputDecoration(
-                    labelText: _nomeLabel, // Usa o label atualizado
+                    labelText: _nomeLabel,
                     hintText:
                         _isCNPJ
                             ? 'Digite o nome da instituição'
@@ -250,6 +245,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       return 'Por favor, insira o nome';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 2;
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -287,6 +287,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 3;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
                 _buildStepIndicator(2, 'Endereço'),
@@ -309,28 +314,31 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _ruaController,
-                  decoration: InputDecoration(
-                    labelText: 'Rua',
-                    hintText: 'Digite sua rua',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    prefixIcon: const Icon(Icons.home),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira sua rua';
+                  onChanged: (value) async {
+                    setState(() {
+                      _currentStep = 4;
+                    });
+                    if (value.length == 8) {
+                      final response = await http.get(
+                        Uri.parse('https://viacep.com.br/ws/$value/json/'),
+                      );
+                      if (response.statusCode == 200) {
+                        final data = json.decode(response.body);
+                        if (data['erro'] == null) {
+                          setState(() {
+                            _tipoLogradouroController.text =
+                                data['logradouro'] ?? '';
+                            _enderecoController.text = data['bairro'] ?? '';
+                            // Se quiser adicionar cidade e estado:
+                            // _cidadeController.text = data['localidade'] ?? '';
+                            // _estadoController.text = data['uf'] ?? '';
+                          });
+                        }
+                      }
                     }
-                    return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _tipoLogradouroController,
@@ -350,6 +358,37 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       return 'Por favor, insira o tipo de logradouro';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 6;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _enderecoController,
+                  decoration: InputDecoration(
+                    labelText: 'Endereço completo sem logradouro',
+                    hintText: 'Ex:gertuli faria',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: const Icon(Icons.map),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o endereço completo sem logradouro';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 6;
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -371,6 +410,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       return 'Por favor, insira o número';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 7;
+                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -394,6 +438,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 8;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -409,6 +458,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     fillColor: Colors.grey[200],
                     prefixIcon: const Icon(Icons.phone),
                   ),
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 9;
+                    });
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -490,7 +544,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
     _cpfCnpjController.dispose();
     _senhaController.dispose();
     _cepController.dispose();
-    _ruaController.dispose();
     _tipoLogradouroController.dispose();
     _numeroController.dispose();
     _telefone1Controller.dispose();
