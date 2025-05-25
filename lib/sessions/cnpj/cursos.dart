@@ -586,7 +586,7 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'AJUDA FÁCIL - INSTITUIÇÃO',
+                  'AJUDA FÁCIL',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -595,7 +595,7 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Bem-vindo, Instituição!',
+                  'Bem-vindo(a), Instituição!',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
@@ -614,7 +614,7 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
           ),
           ListTile(
             leading: Icon(Icons.business, color: AppColors.button),
-            title: const Text('Perfil Institucional'),
+            title: const Text('Perfil da Instituição'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -628,11 +628,15 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
             title: const Text('Cursos e Oportunidades'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const CursosInstituicaoPage()),
+              );
             },
           ),
           ListTile(
             leading: Icon(Icons.card_giftcard, color: AppColors.button),
-            title: const Text('Gerenciar Doações'),
+            title: const Text('Doações Recebidas'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(

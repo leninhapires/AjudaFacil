@@ -235,7 +235,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
       },
     );
   }
-  Widget _buildDrawer(BuildContext context) {
+   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -247,7 +247,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'AJUDA FÁCIL',
+                  'AJUDA FÁCIL - INSTITUIÇÃO',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -256,7 +256,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Bem-vindo, Instituição!',
+                  'Bem-vindo(a), Instituição!',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
@@ -275,7 +275,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.business, color: AppColors.button),
-            title: const Text('Perfil'),
+            title: const Text('Perfil da Instituição'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -286,7 +286,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.school, color: AppColors.button),
-            title: const Text('Cursos'),
+            title: const Text('Cursos e Oportunidades'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -296,8 +296,8 @@ class AjudaInstituicaoPage extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
-            title: const Text('Doações'),
+            leading: Icon(Icons.card_giftcard, color: AppColors.button),
+            title: const Text('Doações Recebidas'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -308,7 +308,7 @@ class AjudaInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.forum, color: AppColors.button),
-            title: const Text('Fórum'),
+            title: const Text('Fórum Institucional'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(

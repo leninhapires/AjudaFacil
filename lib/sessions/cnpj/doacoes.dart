@@ -108,7 +108,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
+   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -120,7 +120,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  'AJUDA FÁCIL',
+                  'AJUDA FÁCIL - INSTITUIÇÃO',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -129,7 +129,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Bem-vinda, Instituição!',
+                  'Bem-vindo(a), Instituição!',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
@@ -148,7 +148,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.business, color: AppColors.button),
-            title: const Text('Perfil'),
+            title: const Text('Perfil da Instituição'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -159,7 +159,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.school, color: AppColors.button),
-            title: const Text('Cursos'),
+            title: const Text('Cursos e Oportunidades'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -169,8 +169,8 @@ class DoacoesInstituicaoPage extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
-            title: const Text('Doações'),
+            leading: Icon(Icons.card_giftcard, color: AppColors.button),
+            title: const Text('Doações Recebidas'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -181,7 +181,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.forum, color: AppColors.button),
-            title: const Text('Fórum'),
+            title: const Text('Fórum Institucional'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -214,7 +214,6 @@ class DoacoesInstituicaoPage extends StatelessWidget {
     );
   }
 }
-
 // ABA "DOANDO" - COMPLETA E INTEGRADA
 class _DoandoTab extends StatefulWidget {
   const _DoandoTab({Key? key}) : super(key: key);

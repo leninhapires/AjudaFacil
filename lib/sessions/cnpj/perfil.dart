@@ -448,7 +448,7 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
+   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -456,27 +456,104 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
           DrawerHeader(
             decoration: BoxDecoration(color: AppColors.button),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('AJUDA FÁCIL', style: TextStyle(color: Colors.white, fontSize: 24)),
+                Text(
+                  'AJUDA FÁCIL - INSTITUIÇÃO',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text('Bem-vindo, $nome', style: TextStyle(color: Colors.white)),
+                Text(
+                  'Bem-vindo(a), Instituição!',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ],
             ),
           ),
-          _buildDrawerItem(Icons.home, 'Início', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageInstituicao()))),
-          _buildDrawerItem(Icons.business, 'Perfil', () => Navigator.pop(context)), // Já está no perfil
-          _buildDrawerItem(Icons.school, 'Cursos', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CursosInstituicaoPage()))),
-          _buildDrawerItem(Icons.volunteer_activism, 'Doações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoacoesInstituicaoPage()))),
-          _buildDrawerItem(Icons.forum, 'Fórum', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ForumInstituicaoPage()))),
-          _buildDrawerItem(Icons.settings, 'Configurações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConfiguracoesInstituicaoPage()))),
+          ListTile(
+            leading: Icon(Icons.home, color: AppColors.button),
+            title: const Text('Início'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.business, color: AppColors.button),
+            title: const Text('Perfil da Instituição'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const PerfilInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.school, color: AppColors.button),
+            title: const Text('Cursos e Oportunidades'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const CursosInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.card_giftcard, color: AppColors.button),
+            title: const Text('Doações Recebidas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const DoacoesInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.forum, color: AppColors.button),
+            title: const Text('Fórum Institucional'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings, color: AppColors.button),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ConfiguracoesInstituicaoPage()),
+              );
+            },
+          ),
           const Divider(),
-          _buildDrawerItem(Icons.exit_to_app, 'Sair', _confirmarLogout),
+          ListTile(
+            leading: Icon(Icons.exit_to_app, color: AppColors.button),
+            title: const Text('Sair'),
+            onTap: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+          ),
         ],
       ),
     );
   }
+}
 
   ListTile _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
     return ListTile(
@@ -485,4 +562,3 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
       onTap: onTap,
     );
   }
-}

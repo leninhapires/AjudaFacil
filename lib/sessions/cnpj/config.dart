@@ -29,7 +29,7 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             const Text(
-              'AJUDA FÁCIL - INSTITUIÇÃO',
+              'AJUDA FÁCIL ',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -232,7 +232,7 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawer(BuildContext context) {
+   Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -253,7 +253,7 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Bem-vindo, Instituição!',
+                  'Bem-vindo(a), Instituição!',
                   style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
@@ -272,7 +272,7 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.business, color: AppColors.button),
-            title: const Text('Perfil Institucional'),
+            title: const Text('Perfil da Instituição'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
@@ -294,7 +294,7 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
           ),
           ListTile(
             leading: Icon(Icons.card_giftcard, color: AppColors.button),
-            title: const Text('Gerenciar Doações'),
+            title: const Text('Doações Recebidas'),
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(
