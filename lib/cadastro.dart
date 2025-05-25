@@ -55,7 +55,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
       if (_isCNPJ) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const HomePageCnpj()),
+          MaterialPageRoute(builder: (_) => const HomePageInstituicao()),
         );
       } else {
         Navigator.pushReplacement(
@@ -148,7 +148,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
       Future.microtask(() {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const HomePageCnpj()),
+          MaterialPageRoute(builder: (_) => const HomePageInstituicao()),
         );
       });
     } else if (isCpfValid && !_redirected) {

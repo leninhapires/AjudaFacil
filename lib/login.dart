@@ -378,7 +378,7 @@ class _LoginScreenState extends State<LoginScreen> {
     } else if (CNPJValidator.isValid(cpfCnpj)) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => HomePageCnpj()),
+        MaterialPageRoute(builder: (_) => HomePageInstituicao()),
       );
     } else {
       setState(() {
