@@ -24,6 +24,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _tipoLogradouroController = TextEditingController();
   final _enderecoController = TextEditingController();
   final _numeroController = TextEditingController();
+  final _bairroController = TextEditingController();
+  final _cidadeController = TextEditingController();
+  final _estadoController = TextEditingController();
   final _telefone1Controller = TextEditingController();
   final _telefone2Controller = TextEditingController();
   final _emailController = TextEditingController();
@@ -63,6 +66,36 @@ class _CadastroScreenState extends State<CadastroScreen> {
     }
   }
 
+  Future<void> _buscarEnderecoPorCep(String cep) async {
+    if (cep.length == 8) {
+      final response = await http.get(
+        Uri.parse('https://viacep.com.br/ws/$cep/json/'),
+      );
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['erro'] == null) {
+          setState(() {
+            _tipoLogradouroController.text = data['logradouro'] ?? '';
+            _bairroController.text = data['bairro'] ?? '';
+            _cidadeController.text = data['localidade'] ?? '';
+            _estadoController.text = data['uf'] ?? '';
+          });
+        } else {
+          // CEP não encontrado
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('CEP não encontrado')),
+          );
+        }
+      } else {
+        // Erro na requisição
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao buscar CEP')),
+        );
+      }
+    }
+  }
+
   Widget _buildStepIndicator(int stepNumber, String title) {
     return Column(
       children: [
@@ -72,10 +105,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
               width: 30,
               height: 30,
               decoration: BoxDecoration(
-                color:
-                    _currentStep >= stepNumber
-                        ? AppColors.button
-                        : Colors.grey[400],
+                color: _currentStep >= stepNumber
+                    ? AppColors.button
+                    : Colors.grey[400],
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -106,8 +138,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
       _nomeLabel = _isCNPJ ? 'Nome da Instituição' : 'Nome completo';
       _currentStep = 1;
       if (!isCnpjValid && !isCpfValid) {
-        _redirected =
-            false; // Permite novo redirecionamento se o campo for alterado
+        _redirected = false; // Permite novo redirecionamento se o campo for alterado
       }
     });
 
@@ -228,10 +259,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   controller: _nomeController,
                   decoration: InputDecoration(
                     labelText: _nomeLabel,
-                    hintText:
-                        _isCNPJ
-                            ? 'Digite o nome da instituição'
-                            : 'Digite seu nome completo',
+                    hintText: _isCNPJ
+                        ? 'Digite o nome da instituição'
+                        : 'Digite seu nome completo',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
@@ -297,6 +327,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 _buildStepIndicator(2, 'Endereço'),
                 TextFormField(
                   controller: _cepController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'CEP',
                     hintText: 'Digite seu CEP',
@@ -307,10 +339,21 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     filled: true,
                     fillColor: Colors.grey[200],
                     prefixIcon: const Icon(Icons.location_on),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search),
+                      onPressed: () async {
+                        if (_cepController.text.length == 8) {
+                          await _buscarEnderecoPorCep(_cepController.text);
+                        }
+                      },
+                    ),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira seu CEP';
+                    }
+                    if (value.length != 8) {
+                      return 'CEP deve ter 8 dígitos';
                     }
                     return null;
                   },
@@ -319,31 +362,15 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       _currentStep = 4;
                     });
                     if (value.length == 8) {
-                      final response = await http.get(
-                        Uri.parse('https://viacep.com.br/ws/$value/json/'),
-                      );
-                      if (response.statusCode == 200) {
-                        final data = json.decode(response.body);
-                        if (data['erro'] == null) {
-                          setState(() {
-                            _tipoLogradouroController.text =
-                                data['logradouro'] ?? '';
-                            _enderecoController.text = data['bairro'] ?? '';
-                            // Se quiser adicionar cidade e estado:
-                            // _cidadeController.text = data['localidade'] ?? '';
-                            // _estadoController.text = data['uf'] ?? '';
-                          });
-                        }
-                      }
+                      await _buscarEnderecoPorCep(value);
                     }
                   },
                 ),
-
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _tipoLogradouroController,
                   decoration: InputDecoration(
-                    labelText: 'Tipo de Logradouro',
+                    labelText: 'Logradouro',
                     hintText: 'Ex: Rua, Avenida, Travessa',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -355,13 +382,13 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o tipo de logradouro';
+                      return 'Por favor, insira o logradouro';
                     }
                     return null;
                   },
                   onChanged: (value) {
                     setState(() {
-                      _currentStep = 6;
+                      _currentStep = 5;
                     });
                   },
                 ),
@@ -369,8 +396,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 TextFormField(
                   controller: _enderecoController,
                   decoration: InputDecoration(
-                    labelText: 'Endereço completo sem logradouro',
-                    hintText: 'Ex:gertuli faria',
+                    labelText: 'Endereço',
+                    hintText: 'Nome do logradouro',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
@@ -381,7 +408,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira o endereço completo sem logradouro';
+                      return 'Por favor, insira o endereço';
                     }
                     return null;
                   },
@@ -394,6 +421,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _numeroController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Número',
                     hintText: 'Digite o número',
@@ -418,9 +446,89 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
+                TextFormField(
+                  controller: _bairroController,
+                  decoration: InputDecoration(
+                    labelText: 'Bairro',
+                    hintText: 'Digite seu bairro',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: const Icon(Icons.location_city),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira seu bairro';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      _currentStep = 8;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: TextFormField(
+                        controller: _cidadeController,
+                        decoration: InputDecoration(
+                          labelText: 'Cidade',
+                          hintText: 'Digite sua cidade',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          prefixIcon: const Icon(Icons.location_city),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira sua cidade';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      flex: 1,
+                      child: TextFormField(
+                        controller: _estadoController,
+                        decoration: InputDecoration(
+                          labelText: 'UF',
+                          hintText: 'UF',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          prefixIcon: const Icon(Icons.map),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira seu estado';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
                 _buildStepIndicator(3, 'Contato'),
                 TextFormField(
                   controller: _telefone1Controller,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'Telefone 1',
                     hintText: 'Digite seu telefone principal',
@@ -440,13 +548,15 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                   onChanged: (value) {
                     setState(() {
-                      _currentStep = 8;
+                      _currentStep = 9;
                     });
                   },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _telefone2Controller,
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
                     labelText: 'Telefone 2 (opcional)',
                     hintText: 'Digite seu telefone secundário',
@@ -458,15 +568,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     fillColor: Colors.grey[200],
                     prefixIcon: const Icon(Icons.phone),
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _currentStep = 9;
-                    });
-                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     hintText: 'Digite seu email',
@@ -545,7 +651,11 @@ class _CadastroScreenState extends State<CadastroScreen> {
     _senhaController.dispose();
     _cepController.dispose();
     _tipoLogradouroController.dispose();
+    _enderecoController.dispose();
     _numeroController.dispose();
+    _bairroController.dispose();
+    _cidadeController.dispose();
+    _estadoController.dispose();
     _telefone1Controller.dispose();
     _telefone2Controller.dispose();
     _emailController.dispose();
