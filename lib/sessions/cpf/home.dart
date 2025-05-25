@@ -4,8 +4,9 @@ import 'ajuda.dart';
 import 'cursos.dart';
 import 'doacoes.dart';
 import 'config.dart';
-
+import 'package:flutter_application_1/furum.dart';
 import '../../theme.dart';
+import 'forumcpf.dart';
 
 class HomePageCpf extends StatelessWidget {
   const HomePageCpf({Key? key}) : super(key: key);
@@ -15,8 +16,6 @@ class HomePageCpf extends StatelessWidget {
     Color(0xFF4285F4), // Azul
     Color(0xFF34A853), // Verde
     Color(0xFFEA4335), // Vermelho
-    Color(0xFFFBBC05), // Amarelo
-    Color(0xFF673AB7), // Roxo
   ];
 
   @override
@@ -46,11 +45,123 @@ class HomePageCpf extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // ... (restante do conteúdo da página)
+            Text(
+              'Seja bem-vindo(a) ao Ajuda Fácil! Estamos aqui para conectar você a uma rede de apoio, oportunidades e solidariedade.',
+              style: TextStyle(fontSize: 16, color: AppColors.secondaryText),
+              textAlign: TextAlign.center,
+            ),
+
+            const SizedBox(height: 32),
+
+            // Card BUSCAR AJUDA
+            _buildFeatureCard(
+              title: 'BUSCAR AJUDA',
+              description: 'Encontre ONCE e apoio perto de você.',
+              buttonText: 'Acessar Agora',
+              icon: Icons.search,
+              color: cardColors[0],
+              onPressed: () {
+                // Ação para buscar ajuda
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Card FAZER DOAÇÃO
+            _buildFeatureCard(
+              title: 'FAZER DOAÇÃO',
+              description: 'Contribua e faça a diferença na vida de alguém.',
+              buttonText: 'Acessar Agora',
+              icon: Icons.volunteer_activism,
+              color: cardColors[1],
+              onPressed: () {
+                // Ação para fazer doação
+              },
+            ),
+            const SizedBox(height: 16),
+
+            // Card ALERTAS
+            _buildFeatureCard(
+              title: 'ALERTAS',
+              description: 'Acesso informações sobre emergências e suporte rápido.',
+              buttonText: 'Acessar Agora',
+              icon: Icons.notifications,
+              color: cardColors[2],
+              onPressed: () {
+                // Ação para alertas
+              },
+            ),
+            const SizedBox(height: 24),
+            
+            // Prévia do fórum
+            const ForumPreview(),
           ],
         ),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(context),
+    );
+  }
+
+  Widget _buildFeatureCard({
+    required String title,
+    required String description,
+    required String buttonText,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 28, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              description,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: onPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                child: Text(buttonText),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -158,6 +269,17 @@ class HomePageCpf extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.forum, color: AppColors.button),
+            title: const Text('Fórum'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ForumPage()),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.settings, color: AppColors.button),
             title: const Text('Configurações'),
             onTap: () {
@@ -175,82 +297,11 @@ class HomePageCpf extends StatelessWidget {
             leading: Icon(Icons.exit_to_app, color: AppColors.button),
             title: const Text('Sair'),
             onTap: () {
+              // Adicione a lógica de logout aqui
               Navigator.pop(context);
-              Divider();
-              ListTile(
-                leading: Icon(Icons.exit_to_app, color: AppColors.button),
-                title: Text('Sair'),
-                onTap: () {
-                  Navigator.pop(context);
-                },
-             ); // Adicione a lógica de logout aqui
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildFeatureCard({
-    required String title,
-    required String description,
-    required String buttonText,
-    required IconData icon,
-    required Color color,
-    required VoidCallback onPressed,
-  }) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: color.withOpacity(0.9),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 28, color: Colors.white),
-                const SizedBox(width: 12),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              description,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.white.withOpacity(0.9),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                ),
-                child: Text(buttonText),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
