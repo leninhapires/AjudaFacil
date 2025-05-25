@@ -39,7 +39,7 @@ Página Inicial	Categorias de Ajuda	Fórum Comunitário
 👨‍💻 Equipe de Desenvolvimento
 Conheça o time por trás do Ajuda Fácil:
 
-Líder Técnico: [Seu Nome] - @seuuser
+Líder Técnico: Francilene - @seuuser
 
 UX/UI Designer: [Nome] - @user
 
