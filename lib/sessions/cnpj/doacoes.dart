@@ -13,7 +13,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4, // Aumentado para 4 abas
       child: Scaffold(
         backgroundColor: AppColors.background,
         drawer: _buildDrawer(context),
@@ -46,6 +46,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
           bottom: const TabBar(
             tabs: [
               Tab(text: 'Receber Doações'),
+              Tab(text: 'Doando'), // Nova aba adicionada
               Tab(text: 'Campanhas'),
               Tab(text: 'Histórico'),
             ],
@@ -57,6 +58,7 @@ class DoacoesInstituicaoPage extends StatelessWidget {
         body: const TabBarView(
           children: [
             _ReceberDoacoesTab(),
+            _DoandoTab(), // Nova aba integrada
             _CampanhasTab(),
             _HistoricoTab(),
           ],
@@ -213,6 +215,339 @@ class DoacoesInstituicaoPage extends StatelessWidget {
   }
 }
 
+// ABA "DOANDO" - COMPLETA E INTEGRADA
+class _DoandoTab extends StatefulWidget {
+  const _DoandoTab({Key? key}) : super(key: key);
+
+  @override
+  State<_DoandoTab> createState() => _DoandoTabState();
+}
+
+class _DoandoTabState extends State<_DoandoTab> {
+  final List<Map<String, dynamic>> donationItems = [
+    {
+      'itemName': 'Cestas Básicas',
+      'quantity': 25,
+      'description': 'Cestas completas com alimentos não perecíveis',
+      'category': 'Alimentos'
+    },
+    {
+      'itemName': 'Roupas de Inverno',
+      'quantity': 120,
+      'description': 'Casacos, blusas e agasalhos em bom estado',
+      'category': 'Vestuário'
+    },
+    {
+      'itemName': 'Livros Infantis',
+      'quantity': 45,
+      'description': 'Livros para crianças de 5 a 12 anos',
+      'category': 'Educação'
+    },
+    {
+      'itemName': 'Móveis Usados',
+      'quantity': 8,
+      'description': 'Mesas, cadeiras e armários para famílias carentes',
+      'category': 'Móveis'
+    },
+  ];
+
+  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  String _selectedCategory = 'Alimentos';
+
+  @override
+  void dispose() {
+    _itemNameController.dispose();
+    _quantityController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          const Text(
+            'Itens Disponíveis para Doação',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ...donationItems.map((item) => _buildDonationItem(
+                itemName: item['itemName'],
+                quantity: item['quantity'],
+                description: item['description'],
+                category: item['category'],
+                onEdit: () => _editItem(item),
+                onRemove: () => _removeItem(item),
+              )),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () => _showAddItemDialog(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.button,
+              foregroundColor: AppColors.buttonText,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            ),
+            child: const Text(
+              'Adicionar Item para Doação',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDonationItem({
+    required String itemName,
+    required int quantity,
+    required String description,
+    required String category,
+    required VoidCallback onEdit,
+    required VoidCallback onRemove,
+  }) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  itemName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Chip(
+                  label: Text(
+                    '$quantity disponíveis',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: AppColors.button,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              style: TextStyle(color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                const Icon(Icons.category, size: 16, color: Colors.grey),
+                const SizedBox(width: 4),
+                Text(
+                  category,
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: onEdit,
+                  child: const Text('Editar'),
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  onPressed: onRemove,
+                  child: const Text('Remover', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showAddItemDialog(BuildContext context, [Map<String, dynamic>? item]) {
+    final isEditing = item != null;
+    
+    if (isEditing) {
+      _itemNameController.text = item['itemName'];
+      _quantityController.text = item['quantity'].toString();
+      _descriptionController.text = item['description'];
+      _selectedCategory = item['category'];
+    } else {
+      _itemNameController.clear();
+      _quantityController.clear();
+      _descriptionController.clear();
+      _selectedCategory = 'Alimentos';
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Editar Item' : 'Adicionar Item para Doação'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _itemNameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Nome do Item',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _quantityController,
+                  decoration: const InputDecoration(
+                    labelText: 'Quantidade',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Descrição',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  decoration: const InputDecoration(
+                    labelText: 'Categoria',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: [
+                    'Alimentos',
+                    'Vestuário',
+                    'Educação',
+                    'Móveis',
+                    'Eletrônicos',
+                    'Outros'
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      _selectedCategory = value;
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_itemNameController.text.isEmpty ||
+                    _quantityController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Preencha todos os campos obrigatórios'),
+                    ),
+                  );
+                  return;
+                }
+
+                final newItem = {
+                  'itemName': _itemNameController.text,
+                  'quantity': int.tryParse(_quantityController.text) ?? 0,
+                  'description': _descriptionController.text,
+                  'category': _selectedCategory,
+                };
+
+                if (isEditing) {
+                  final index = donationItems.indexWhere(
+                      (element) => element['itemName'] == item['itemName']);
+                  if (index != -1) {
+                    setState(() {
+                      donationItems[index] = newItem;
+                    });
+                  }
+                } else {
+                  setState(() {
+                    donationItems.add(newItem);
+                  });
+                }
+
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.button,
+                foregroundColor: AppColors.buttonText,
+              ),
+              child: Text(isEditing ? 'Salvar' : 'Adicionar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _editItem(Map<String, dynamic> item) {
+    _showAddItemDialog(context, item);
+  }
+
+  void _removeItem(Map<String, dynamic> item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar Remoção'),
+          content: Text('Tem certeza que deseja remover ${item['itemName']}?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  donationItems.remove(item);
+                });
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('Remover'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 class _ReceberDoacoesTab extends StatelessWidget {
   const _ReceberDoacoesTab({Key? key}) : super(key: key);
 
