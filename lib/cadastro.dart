@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cpf_cnpj_validator/cpf_validator.dart';
 import 'package:cpf_cnpj_validator/cnpj_validator.dart';
 import 'theme.dart';
+import 'sessions/cpf/home.dart';
+import 'sessions/cnpj/home.dart';
 
 class CadastroScreen extends StatefulWidget {
   const CadastroScreen({Key? key}) : super(key: key);
@@ -24,19 +26,21 @@ class _CadastroScreenState extends State<CadastroScreen> {
   final _emailController = TextEditingController();
   String? _errorMessage;
   bool _obscureSenha = true;
+  bool _isCNPJ = false;
+  String _nomeLabel = 'Nome completo'; // Valor inicial do label
 
   int _currentStep = 0;
 
   double get _progress {
     switch (_currentStep) {
       case 0:
-        return 0.2; // Informações Pessoais
+        return 0.2;
       case 1:
-        return 0.4; // Documento
+        return 0.4;
       case 2:
-        return 0.6; // Endereço
+        return 0.6;
       case 3:
-        return 0.8; // Contato
+        return 0.8;
       default:
         return 0.0;
     }
@@ -55,7 +59,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
       String telefone2 = _telefone2Controller.text;
       String email = _emailController.text;
 
-      // Validação do CPF/CNPJ
       if (!CPFValidator.isValid(cpfCnpj) && !CNPJValidator.isValid(cpfCnpj)) {
         setState(() {
           _errorMessage = "CPF ou CNPJ inválido!";
@@ -63,25 +66,18 @@ class _CadastroScreenState extends State<CadastroScreen> {
         return;
       }
 
-      // TODO: Implementar a lógica de cadastro aqui
-      // Você pode usar Firebase Authentication, um banco de dados local, etc.
-      // Exemplo:
-      // try {
-      //   await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      //     email: cpfCnpj, // Use CPF/CNPJ como email (se for o caso)
-      //     password: senha,
-      //   );
-      //   // Cadastro bem-sucedido
-      //   Navigator.pushReplacementNamed(context, '/home');
-      // } catch (e) {
-      //   setState(() {
-      //     _errorMessage = "Erro ao cadastrar: $e";
-      //   });
-      // }
-
-      // Simulação de cadastro bem-sucedido (sem Firebase)
       print('Cadastro bem-sucedido!');
-      Navigator.pop(context); // Retorna para a tela anterior
+      if (_isCNPJ) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePageCnpj()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePageCpf()),
+        );
+      }
     }
   }
 
@@ -135,11 +131,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Logo
                 Image.asset('assets/image/logo.png', height: 100),
                 const SizedBox(height: 24),
-
-                // Título
                 Text(
                   "Crie sua conta",
                   style: TextStyle(
@@ -150,24 +143,18 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
-
-                // Barra de progresso
                 LinearProgressIndicator(
                   value: _progress,
                   backgroundColor: Colors.grey[300],
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.button),
                 ),
                 const SizedBox(height: 12),
-
-                // Subtítulo
                 Text(
                   "Comece a usar o Ajuda Fácil agora mesmo!",
                   style: TextStyle(fontSize: 16, color: AppColors.button),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-
-                // Mensagem de erro
                 if (_errorMessage != null)
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -182,14 +169,74 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-
-                // Etapa 1: Informações Pessoais
-                _buildStepIndicator(0, 'Informações Pessoais'),
+                _buildStepIndicator(0, 'Documento'),
+                TextFormField(
+                  controller: _cpfCnpjController,
+                  decoration: InputDecoration(
+                    labelText: 'CPF ou CNPJ',
+                    hintText: 'Digite seu CPF ou CNPJ',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    prefixIcon: const Icon(Icons.badge),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira seu CPF ou CNPJ';
+                    }
+                    if (!CPFValidator.isValid(value) &&
+                        !CNPJValidator.isValid(value)) {
+                      return 'CPF ou CNPJ inválido';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      // Se for CNPJ válido e 14 dígitos, muda label e redireciona
+                      if (CNPJValidator.isValid(value) && value.length == 14) {
+                        _isCNPJ = true;
+                        _nomeLabel = 'Nome da Instituição';
+                        // Redireciona para HomePageCnpj
+                        Future.microtask(() {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const HomePageCnpj(),
+                            ),
+                          );
+                        });
+                      } else {
+                        // Mantém como CPF
+                        _isCNPJ = false;
+                        _nomeLabel = 'Nome completo';
+                        // Redireciona para HomePageCpf se for CPF válido e 11 dígitos
+                        if (CPFValidator.isValid(value) && value.length == 11) {
+                          Future.microtask(() {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const HomePageCpf(),
+                              ),
+                            );
+                          });
+                        }
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
+                _buildStepIndicator(1, 'Informações Pessoais'),
                 TextFormField(
                   controller: _nomeController,
                   decoration: InputDecoration(
-                    labelText: 'Nome completo',
-                    hintText: 'Digite seu nome completo',
+                    labelText: _nomeLabel, // Usa o label atualizado
+                    hintText:
+                        _isCNPJ
+                            ? 'Digite o nome da instituição'
+                            : 'Digite seu nome completo',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: Colors.grey),
@@ -200,18 +247,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu nome';
+                      return 'Por favor, insira o nome';
                     }
                     return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      if (_senhaController.text.isNotEmpty) {
-                        _currentStep = 1;
-                      } else {
-                        _currentStep = 0;
-                      }
-                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -249,52 +287,8 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     }
                     return null;
                   },
-                  onChanged: (value) {
-                    setState(() {
-                      if (_nomeController.text.isNotEmpty) {
-                        _currentStep = 1;
-                      } else {
-                        _currentStep = 0;
-                      }
-                    });
-                  },
                 ),
                 const SizedBox(height: 16),
-
-                // Etapa 2: Documento
-                _buildStepIndicator(1, 'Documento'),
-                TextFormField(
-                  controller: _cpfCnpjController,
-                  decoration: InputDecoration(
-                    labelText: 'CPF ou CNPJ',
-                    hintText: 'Digite seu CPF ou CNPJ',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.grey),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200],
-                    prefixIcon: const Icon(Icons.badge),
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Por favor, insira seu CPF ou CNPJ';
-                    }
-                    if (!CPFValidator.isValid(value) &&
-                        !CNPJValidator.isValid(value)) {
-                      return 'CPF ou CNPJ inválido';
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _currentStep = 2;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16),
-
-                // Etapa 3: Endereço
                 _buildStepIndicator(2, 'Endereço'),
                 TextFormField(
                   controller: _cepController,
@@ -314,11 +308,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       return 'Por favor, insira seu CEP';
                     }
                     return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _currentStep = 3;
-                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -385,8 +374,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-
-                // Etapa 4: Contato
                 _buildStepIndicator(3, 'Contato'),
                 TextFormField(
                   controller: _telefone1Controller,
@@ -406,11 +393,6 @@ class _CadastroScreenState extends State<CadastroScreen> {
                       return 'Por favor, insira seu telefone principal';
                     }
                     return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      _currentStep = 4;
-                    });
                   },
                 ),
                 const SizedBox(height: 16),
@@ -471,7 +453,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        'assets/image/glogo.png', // Substitua pelo caminho da sua imagem
+                        'assets/image/glogo.png',
                         height: 24,
                         width: 24,
                       ),

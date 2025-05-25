@@ -6,6 +6,9 @@ class AppColors {
   static const Color button = Color(0xFF204F3D);
   static const Color buttonText = Colors.white;
   static const Color primaryText = Color(0xFF26483A);
+  static const Color secondaryText = Color(
+    0xFF737373,
+  ); // Adicionei a cor secondaryText
   static const Color heartRed = Color(0xFFC82828);
   static const Color shadow = Color(0xFFCCDED5);
   static const Color accessibilityIcon = Color(0xFF436B56);
@@ -16,7 +19,7 @@ class AppColors {
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: AppColors.background,
-    fontFamily: 'Roboto',
+    fontFamily: 'Nunito', // Use a fonte Nunito
     splashColor: AppColors.button,
     highlightColor: AppColors.button,
     textSelectionTheme: const TextSelectionThemeData(
@@ -56,8 +59,7 @@ class AppTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: AppColors.shadow),
       ),
-      focusedBorder: OutlineInputBorder(
-      ),
+      focusedBorder: OutlineInputBorder(),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: const BorderSide(color: AppColors.heartRed),

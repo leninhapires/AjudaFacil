@@ -5,6 +5,7 @@ import 'login.dart';
 import 'theme.dart';
 import 'sessions/cpf/home.dart';
 import 'sessions/cnpj/home.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 
 class AccessibilitySettings extends ChangeNotifier {
   double fontSize = 16.0;
@@ -326,11 +327,12 @@ class WelcomeScreen extends StatelessWidget {
                 const SizedBox(height: 20),
                 _buildAccessibleButton(
                   label: 'Iniciar Cadastro',
-                  semanticHint: 'Toque para criar uma nova conta',
+                  semanticHint:
+                      'Toque para saber mais sobre o aplicativo e iniciar o cadastro',
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const CadastroScreen()),
+                      MaterialPageRoute(builder: (_) => const AboutAppScreen()),
                     );
                   },
                 ),
@@ -349,6 +351,134 @@ class WelcomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AboutAppScreen extends StatefulWidget {
+  const AboutAppScreen({Key? key}) : super(key: key);
+
+  @override
+  AboutAppScreenState createState() => AboutAppScreenState();
+}
+
+class AboutAppScreenState extends State<AboutAppScreen> {
+  final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
+
+  final List<String> texts = [
+    '''BEM-VINDO AO NOSSO APLICATIVO!
+ESTE APP FOI CRIADO PARA CONECTAR PESSOAS, ONGS, IGREJAS E INSTITUIÇÕES QUE QUEREM AJUDAR E SEREM AJUDADAS.''',
+    '''AQUI, ORGANIZAÇÕES PODEM SE CADASTRAR PARA RECEBER DOAÇÕES DE ITENS OU DINHEIRO, FACILITANDO O SUPORTE A QUEM REALMENTE PRECISA.
+SE VOCÊ É UMA PESSOA QUE DESEJA FAZER A DIFERENÇA, TAMBÉM PODE SE CADASTRAR PARA ENCONTRAR ESSAS INSTITUIÇÕES E CONTRIBUIR COM DOAÇÕES, SEJA COM RECURSOS FINANCEIROS OU COM ITENS QUE VOCÊ QUER DOAR.''',
+    '''NOSSO OBJETIVO É FORTALECER A REDE DE SOLIDARIEDADE, TORNANDO MAIS FÁCIL E ACESSÍVEL O ENCONTRO ENTRE QUEM AJUDA E QUEM PRECISA DE AJUDA. JUNTOS, PODEMOS TRANSFORMAR VIDAS!
+AO PROSSEGUIR VOCE CONCORDA COM NOSSOS TERMOS.''',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/image/logo.png', // Caminho para sua logo
+          height: 40, // Ajuste a altura conforme necessário
+        ),
+        centerTitle: true, // Opcional: centraliza a logo
+      ),
+      body: Container(
+        // Centraliza todo o conteúdo
+        color: AppColors.background,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: texts.length,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Center(
+                        child: Container(
+                          height: 200, // Defina a altura desejada
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: AppColors.button,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade300),
+                          ),
+                          child: Text(
+                            texts[index],
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: AppColors.buttonText,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 10),
+                DotsIndicator(
+                  dotsCount: texts.length,
+                  position: _currentPage.toDouble(),
+                  decorator: DotsDecorator(
+                    color: Colors.grey, // Cor das bolinhas não selecionadas
+                    activeColor: AppColors.button, // Cor da bolinha selecionada
+                  ),
+                ),
+                _currentPage < texts.length - 1
+                    ? ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.button,
+                        foregroundColor: AppColors.buttonText,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 16,
+                        ),
+                        textStyle: const TextStyle(fontSize: 20),
+                      ),
+                      child: const Text('Próximo'),
+                      onPressed: () {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                    )
+                    : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.button,
+                        foregroundColor: AppColors.buttonText,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 16,
+                        ),
+                        textStyle: const TextStyle(fontSize: 20),
+                      ),
+                      child: const Text('Acessar Cadastro'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CadastroScreen(),
+                          ),
+                        );
+                      },
+                    ),
               ],
             ),
           ),
