@@ -1,25 +1,42 @@
 import 'package:flutter/material.dart';
-import '../../theme.dart'; // Importe seu arquivo de tema
+import 'perfil.dart';
+import 'ajuda.dart';
+import 'cursos.dart';
+import 'doacoes.dart';
+import 'config.dart';
+
+import '../../theme.dart';
 
 class HomePageCpf extends StatelessWidget {
   const HomePageCpf({Key? key}) : super(key: key);
+
+  // Lista de cores para os cards
+  final List<Color> cardColors = const [
+    Color(0xFF4285F4), // Azul
+    Color(0xFF34A853), // Verde
+    Color(0xFFEA4335), // Vermelho
+    Color(0xFFFBBC05), // Amarelo
+    Color(0xFF673AB7), // Roxo
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+      drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('Página Inicial'),
+        title: const Text('AJUDA FÁCIL'),
         backgroundColor: AppColors.button,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // Título de boas-vindas
+            // Mensagem de boas-vindas
             Text(
-              'Bem-vindo de volta!',
+              'Olá, Usuário!',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -27,99 +44,210 @@ class HomePageCpf extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
 
-            // Subtítulo
-            Text(
-              'Confira as últimas novidades e participe do fórum!',
-              style: TextStyle(fontSize: 16, color: AppColors.secondaryText),
-              textAlign: TextAlign.center,
+            // ... (restante do conteúdo da página)
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
+      ],
+      currentIndex: 1, // Índice do item ativo (Início)
+      selectedItemColor: AppColors.button,
+      unselectedItemColor: Colors.grey,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilPage()),
+            );
+            break;
+          case 1:
+            // Já está na tela inicial
+            break;
+          case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaPage()),
+            );
+            break;
+        }
+      },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: AppColors.button),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'AJUDA FÁCIL',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Bem-vindo, Usuário!',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
+          ),
+          ListTile(
+            leading: Icon(Icons.home, color: AppColors.button),
+            title: const Text('Início'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePageCpf()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person, color: AppColors.button),
+            title: const Text('Perfil'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PerfilPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.school, color: AppColors.button),
+            title: const Text('Cursos'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CursosPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
+            title: const Text('Doações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DoacoesPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings, color: AppColors.button),
+            title: const Text('Configurações'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ConfiguracoesPage(),
+                ),
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app, color: AppColors.button),
+            title: const Text('Sair'),
+            onTap: () {
+              Navigator.pop(context);
+              Divider();
+              ListTile(
+                leading: Icon(Icons.exit_to_app, color: AppColors.button),
+                title: Text('Sair'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+             ); // Adicione a lógica de logout aqui
+            },
+          ),
+        ],
+      ),
+    );
+  }
 
-            // Prévia do Fórum
+  Widget _buildFeatureCard({
+    required String title,
+    required String description,
+    required String buttonText,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color.withOpacity(0.9),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, size: 28, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             Text(
-              'Fórum - Novidades',
+              description,
               style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryText,
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.9),
               ),
             ),
             const SizedBox(height: 16),
-
-            // Card 1
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Título da Novidade 1',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryText,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Descrição da novidade 1. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: onPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
+                child: Text(buttonText),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Card 2
-            Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Título da Novidade 2',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryText,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Descrição da novidade 2. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: AppColors.secondaryText,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Botão para o fórum
-            ElevatedButton(
-              onPressed: () {
-                // Navegar para a tela do fórum
-              },
-              child: const Text('Acessar o Fórum'),
             ),
           ],
         ),
