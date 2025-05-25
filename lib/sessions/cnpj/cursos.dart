@@ -76,7 +76,7 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
             ),
             const SizedBox(width: 8),
             const Text(
-              'AJUDA FÁCIL - INSTITUIÇÃO',
+              'AJUDA FÁCIL ',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
