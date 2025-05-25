@@ -108,6 +108,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: Semantics(
         label: 'Tela de carregamento do Ajuda Fácil',
         child: Center(
@@ -125,7 +126,7 @@ class _SplashScreenState extends State<SplashScreen> {
               Semantics(
                 label: 'Logo do Ajuda Fácil',
                 child: Image.asset(
-                  'assets/image/logo.png',
+                  'assets/image/logoprinc.png',
                   width: 250,
                   height: 250,
                   fit: BoxFit.contain,
@@ -278,6 +279,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       floatingActionButton: Semantics(
         button: true,
         label: 'Configurações de acessibilidade',

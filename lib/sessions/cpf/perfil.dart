@@ -3,10 +3,9 @@ import 'ajuda.dart';
 import 'cursos.dart';
 import 'doacoes.dart';
 import 'config.dart';
+import 'forumcpf.dart'; // Corrigi o nome do arquivo
 import '../../theme.dart';
-import 'forumcpf.dart';
 import 'home.dart';
-
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({Key? key}) : super(key: key);
@@ -16,25 +15,21 @@ class PerfilPage extends StatefulWidget {
 }
 
 class _PerfilPageState extends State<PerfilPage> {
-  // Dados do usuário (inicialmente vazios)
+  // Dados do usuário
   String nome = 'Usuário';
   String email = 'usuario@email.com';
   String telefone = '(00) 00000-0000';
   String endereco = 'Rua Exemplo, 123';
 
-  // Controladores para os campos editáveis
+  // Controladores
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _enderecoController = TextEditingController();
 
-  // Variável para a foto do perfil
-  String fotoPerfil = 'assets/default_profile.png'; // Substitua pelo caminho da sua imagem padrão
-
   @override
   void initState() {
     super.initState();
-    // Inicializa os controladores com os valores atuais
     _nomeController.text = nome;
     _emailController.text = email;
     _telefoneController.text = telefone;
@@ -43,7 +38,6 @@ class _PerfilPageState extends State<PerfilPage> {
 
   @override
   void dispose() {
-    // Limpa os controladores quando o widget for descartado
     _nomeController.dispose();
     _emailController.dispose();
     _telefoneController.dispose();
@@ -57,22 +51,42 @@ class _PerfilPageState extends State<PerfilPage> {
       backgroundColor: AppColors.background,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('AJUDA FÁCIL'),
-        backgroundColor: AppColors.button,
-        centerTitle: true,
+  backgroundColor: AppColors.button,
+  centerTitle: true,
+  title: Row(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset(
+        'assets/image/logo.png',
+        height: 30,
       ),
+      const SizedBox(width: 8),
+      const Text(
+        'AJUDA FÁCIL',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(width: 20),
+      Image.asset(
+        'assets/image/cv.png',
+        height: 70,
+      ),
+    ],
+  ),
+),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Seção da foto do perfil
+            // Foto do perfil
             Stack(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 60,
-                  backgroundImage: AssetImage(fotoPerfil),
-                  backgroundColor: AppColors.button.withOpacity(0.2),
+                  backgroundImage: AssetImage('assets/default_profile.png'),
                 ),
                 Positioned(
                   bottom: 0,
@@ -92,36 +106,28 @@ class _PerfilPageState extends State<PerfilPage> {
             ),
             const SizedBox(height: 24),
 
-            // Card de informações pessoais
+            // Informações pessoais
             _buildInfoCard(
               title: 'INFORMAÇÕES PESSOAIS',
               children: [
-                _buildEditableField(
-                  label: 'Nome Completo',
-                  controller: _nomeController,
-                  icon: Icons.person,
-                ),
-                _buildEditableField(
-                  label: 'E-mail',
-                  controller: _emailController,
-                  icon: Icons.email,
-                ),
-                _buildEditableField(
-                  label: 'Telefone',
-                  controller: _telefoneController,
-                  icon: Icons.phone,
-                  keyboardType: TextInputType.phone,
-                ),
-                _buildEditableField(
-                  label: 'Endereço',
-                  controller: _enderecoController,
-                  icon: Icons.location_on,
+                _buildEditableField('Nome', _nomeController, Icons.person),
+                _buildEditableField('E-mail', _emailController, Icons.email),
+                _buildEditableField('Telefone', _telefoneController, Icons.phone, TextInputType.phone),
+                _buildEditableField('Endereço', _enderecoController, Icons.location_on),
+                ElevatedButton(
+                  onPressed: _salvarAlteracoes,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.button,
+                    foregroundColor: AppColors.buttonText,
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  child: const Text('SALVAR ALTERAÇÕES'),
                 ),
               ],
             ),
             const SizedBox(height: 24),
 
-            // Card de segurança
+            // Segurança
             _buildInfoCard(
               title: 'SEGURANÇA',
               children: [
@@ -135,26 +141,24 @@ class _PerfilPageState extends State<PerfilPage> {
                   leading: Icon(Icons.security, color: AppColors.button),
                   title: const Text('Privacidade'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    // Navegar para tela de privacidade
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 24),
 
-            // Botão para sair
+            // Botão de logout
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _confirmarLogout,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red[400],
-                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red,
+                  foregroundColor: AppColors.buttonText,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
                 ),
                 child: const Text('SAIR DA CONTA'),
               ),
@@ -162,29 +166,21 @@ class _PerfilPageState extends State<PerfilPage> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(0), // Índice 0 para Perfil selecionado
+      bottomNavigationBar: _buildBottomNavigationBar(0),
     );
   }
 
+  // Métodos auxiliares
   Widget _buildInfoCard({required String title, required List<Widget> children}) {
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.primaryText,
-              ),
-            ),
+            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             ...children,
           ],
@@ -193,12 +189,7 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _buildEditableField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
+  Widget _buildEditableField(String label, TextEditingController controller, IconData icon, [TextInputType? keyboardType]) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
@@ -206,45 +197,28 @@ class _PerfilPageState extends State<PerfilPage> {
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: AppColors.button),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
         keyboardType: keyboardType,
-        style: TextStyle(color: AppColors.primaryText),
       ),
     );
   }
 
   Widget _buildBottomNavigationBar(int currentIndex) {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Perfil',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Início',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.help),
-          label: 'Ajuda',
-        ),
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
       ],
       currentIndex: currentIndex,
       selectedItemColor: AppColors.button,
-      unselectedItemColor: Colors.grey,
-      onTap: (int index) {
+      onTap: (index) {
         if (index == 1) {
-          // Navegar para Home
-          Navigator.pushReplacementNamed(context, '/home');
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageCpf()));
         } else if (index == 2) {
-          // Navegar para Ajuda
-          Navigator.pushNamed(context, '/ajuda');
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AjudaPage()));
         }
-        // Se for 0 (Perfil), já estamos na tela
       },
     );
   }
@@ -252,31 +226,27 @@ class _PerfilPageState extends State<PerfilPage> {
   void _trocarFoto() {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera),
-                title: const Text('Tirar Foto'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Implementar lógica para tirar foto
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Escolher da Galeria'),
-                onTap: () {
-                  Navigator.pop(context);
-                  // Implementar lógica para escolher da galeria
-                },
-              ),
-            ],
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.camera),
+            title: const Text('Tirar Foto'),
+            onTap: () {
+              Navigator.pop(context);
+              // Implementar câmera
+            },
           ),
-        );
-      },
+          ListTile(
+            leading: const Icon(Icons.photo_library),
+            title: const Text('Escolher da Galeria'),
+            onTap: () {
+              Navigator.pop(context);
+              // Implementar galeria
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -287,104 +257,65 @@ class _PerfilPageState extends State<PerfilPage> {
       telefone = _telefoneController.text;
       endereco = _enderecoController.text;
     });
-
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Alterações salvas com sucesso!'),
-        duration: Duration(seconds: 2),
-      ),
+      const SnackBar(content: Text('Alterações salvas com sucesso!')),
     );
   }
 
   void _alterarSenha() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Alterar Senha'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Senha Atual',
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Nova Senha',
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
-                obscureText: true,
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Confirmar Nova Senha',
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
-                obscureText: true,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Senha alterada com sucesso!'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.button,
-              ),
-              child: const Text('Salvar'),
-            ),
+      builder: (context) => AlertDialog(
+        title: const Text('Alterar Senha'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(decoration: const InputDecoration(labelText: 'Senha Atual'), obscureText: true),
+            const SizedBox(height: 16),
+            TextFormField(decoration: const InputDecoration(labelText: 'Nova Senha'), obscureText: true),
+            const SizedBox(height: 16),
+            TextFormField(decoration: const InputDecoration(labelText: 'Confirmar Nova Senha'), obscureText: true),
           ],
-        );
-      },
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Senha alterada com sucesso!')),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.button),
+            child: const Text('Salvar'),
+          ),
+        ],
+      ),
     );
   }
 
   void _confirmarLogout() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Sair da Conta'),
-          content: const Text('Tem certeza que deseja sair da sua conta?'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                // Implementar lógica de logout
-                Navigator.pushReplacementNamed(context, '/login');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              child: const Text('Sair'),
-            ),
-          ],
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: const Text('Sair da Conta'),
+        content: const Text('Tem certeza que deseja sair?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.popUntil(context, (route) => route.isFirst);
+              // Adicionar lógica de logout aqui
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Sair'),
+          ),
+        ],
+      ),
     );
   }
-Widget _buildDrawer(BuildContext context) {
+
+  Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -392,101 +323,33 @@ Widget _buildDrawer(BuildContext context) {
           DrawerHeader(
             decoration: BoxDecoration(color: AppColors.button),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'AJUDA FÁCIL',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('AJUDA FÁCIL', style: TextStyle(color: Colors.white, fontSize: 24)),
                 const SizedBox(height: 8),
-                Text(
-                  'Bem-vindo, Usuário!',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                Text('Bem-vindo, $nome', style: TextStyle(color: Colors.white)),
               ],
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.home, color: AppColors.button),
-            title: const Text('Início'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePageCpf()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.person, color: AppColors.button),
-            title: const Text('Perfil'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const PerfilPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.school, color: AppColors.button),
-            title: const Text('Cursos'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const CursosPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.volunteer_activism, color: AppColors.button),
-            title: const Text('Doações'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const DoacoesPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.forum, color: AppColors.button),
-            title: const Text('Fórum'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ForumPage()),
-              );
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.settings, color: AppColors.button),
-            title: const Text('Configurações'),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
-              );
-            },
-          ),
+          _buildDrawerItem(Icons.home, 'Início', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageCpf()))),
+          _buildDrawerItem(Icons.person, 'Perfil', () => Navigator.pop(context)), // Já está no perfil
+          _buildDrawerItem(Icons.school, 'Cursos', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CursosPage()))),
+          _buildDrawerItem(Icons.volunteer_activism, 'Doações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoacoesPage()))),
+          _buildDrawerItem(Icons.forum, 'Fórum', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ForumPage()))),
+          _buildDrawerItem(Icons.settings, 'Configurações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConfiguracoesPage()))),
           const Divider(),
-          ListTile(
-            leading: Icon(Icons.exit_to_app, color: AppColors.button),
-            title: const Text('Sair'),
-            onTap: () {
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-          ),
+          _buildDrawerItem(Icons.exit_to_app, 'Sair', _confirmarLogout),
         ],
       ),
+    );
+  }
+
+  ListTile _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: AppColors.button),
+      title: Text(title),
+      onTap: onTap,
     );
   }
 }

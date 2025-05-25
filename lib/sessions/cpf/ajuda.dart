@@ -12,11 +12,33 @@ class AjudaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('CENTRAL DE AJUDA'),
-        backgroundColor: AppColors.button,
-        centerTitle: true,
+     appBar: AppBar(
+  backgroundColor: AppColors.button,
+  centerTitle: true,
+  title: Row(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset(
+        'assets/image/logo.png',
+        height: 30,
       ),
+      const SizedBox(width: 8),
+      const Text(
+        'AJUDA FÁCIL',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(width: 20),
+      Image.asset(
+        'assets/image/cv.png',
+        height: 70,
+      ),
+    ],
+  ),
+),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(

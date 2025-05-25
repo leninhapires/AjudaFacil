@@ -23,10 +23,32 @@ class HomePageCpf extends StatelessWidget {
       backgroundColor: AppColors.background,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('AJUDA FÁCIL'),
-        backgroundColor: AppColors.button,
-        centerTitle: true,
+  backgroundColor: AppColors.button,
+  centerTitle: true,
+  title: Row(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Image.asset(
+        'assets/image/logo.png',
+        height: 30,
       ),
+      const SizedBox(width: 8),
+      const Text(
+        'AJUDA FÁCIL',
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      const SizedBox(width: 20),
+      Image.asset(
+        'assets/image/cv.png',
+        height: 70,
+      ),
+    ],
+  ),
+),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(

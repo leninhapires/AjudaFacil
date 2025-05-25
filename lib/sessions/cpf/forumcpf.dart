@@ -16,9 +16,31 @@ class ForumPage extends StatelessWidget {
       backgroundColor: AppColors.background,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-        title: const Text('AJUDA FÁCIL'),
         backgroundColor: AppColors.button,
         centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/image/logo.png',
+              height: 30,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'AJUDA FÁCIL',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 20),
+            Image.asset(
+              'assets/image/cv.png',
+              height: 70,
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -124,6 +146,7 @@ class ForumPage extends StatelessWidget {
         backgroundColor: AppColors.button,
         child: const Icon(Icons.add),
       ),
+      bottomNavigationBar: _buildBottomNavigationBar(context, 1),
     );
   }
 
@@ -137,9 +160,7 @@ class ForumPage extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () {
@@ -189,10 +210,7 @@ class ForumPage extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     author,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -206,19 +224,13 @@ class ForumPage extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         '$replies respostas',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       ),
                     ],
                   ),
                   Text(
                     lastActivity,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],
               ),
@@ -228,8 +240,48 @@ class ForumPage extends StatelessWidget {
       ),
     );
   }
-}
-Widget _buildDrawer(BuildContext context) {
+
+  Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Perfil',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Início',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.help),
+          label: 'Ajuda',
+        ),
+      ],
+      currentIndex: currentIndex,
+      selectedItemColor: AppColors.button,
+      unselectedItemColor: Colors.grey,
+      onTap: (int index) {
+        if (index == 0) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const PerfilPage()),
+          );
+        } else if (index == 1) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePageCpf()),
+          );
+        } else if (index == 2) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const AjudaPage()),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -272,7 +324,7 @@ Widget _buildDrawer(BuildContext context) {
             title: const Text('Perfil'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const PerfilPage()),
               );
@@ -283,7 +335,7 @@ Widget _buildDrawer(BuildContext context) {
             title: const Text('Cursos'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const CursosPage()),
               );
@@ -294,7 +346,7 @@ Widget _buildDrawer(BuildContext context) {
             title: const Text('Doações'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const DoacoesPage()),
               );
@@ -305,7 +357,7 @@ Widget _buildDrawer(BuildContext context) {
             title: const Text('Fórum'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumPage()),
               );
@@ -316,11 +368,9 @@ Widget _buildDrawer(BuildContext context) {
             title: const Text('Configurações'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ConfiguracoesPage(),
-                ),
+                MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
               );
             },
           ),
@@ -329,11 +379,11 @@ Widget _buildDrawer(BuildContext context) {
             leading: Icon(Icons.exit_to_app, color: AppColors.button),
             title: const Text('Sair'),
             onTap: () {
-              // Adicione a lógica de logout aqui
-              Navigator.pop(context);
+              Navigator.popUntil(context, (route) => route.isFirst);
             },
           ),
         ],
       ),
     );
   }
+}

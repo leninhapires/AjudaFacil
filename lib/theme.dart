@@ -6,17 +6,26 @@ class AppColors {
   static const Color button = Color(0xFF204F3D);
   static const Color buttonText = Colors.white;
   static const Color primaryText = Color(0xFF26483A);
-  static const Color secondaryText = Color(
-    0xFF737373,
-  ); // Adicionei a cor secondaryText
+  static const Color secondaryText = Color(0xFF737373,); // Adicionei a cor secondaryText
   static const Color heartRed = Color(0xFFC82828);
   static const Color shadow = Color(0xFFCCDED5);
   static const Color accessibilityIcon = Color(0xFF436B56);
   static const Color skinTone = Color(0xFFF7D8BF);
+   
 }
+
 
 // Tema do Aplicativo
 class AppTheme {
+  static Color background(BuildContext context) => 
+      Theme.of(context).brightness == Brightness.dark 
+      ? Colors.grey[900]! 
+      : Colors.white;
+      
+  static Color primaryText(BuildContext context) => 
+      Theme.of(context).brightness == Brightness.dark 
+      ? Colors.white 
+      : Colors.black;
   static ThemeData lightTheme = ThemeData(
     scaffoldBackgroundColor: AppColors.background,
     fontFamily: 'Nunito', // Use a fonte Nunito
