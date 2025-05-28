@@ -6,6 +6,7 @@ import 'config.dart';
 import 'forumcnpj.dart';
 import '../../theme.dart';
 import 'home.dart';
+import 'package:flutter_application_1/map.dart';
 
 class PerfilInstituicaoPage extends StatefulWidget {
   const PerfilInstituicaoPage({Key? key}) : super(key: key);
@@ -226,11 +227,62 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(0),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 
-  // Métodos auxiliares
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person), 
+          label: 'Perfil',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home), 
+          label: 'Início',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.location_on),
+          label: 'Mapa',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.help_outline), 
+          label: 'Ajuda',
+        ),
+      ],
+      currentIndex: 0, // Perfil está selecionado
+      selectedItemColor: AppColors.button,
+      unselectedItemColor: Colors.grey,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            // Já está na página de perfil
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
+            );
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
+            );
+            break;
+        }
+      },
+    );
+  }
+
+  // Restante dos métodos permanecem iguais...
   Widget _buildInfoCard({
     required String title,
     required List<Widget> children,
@@ -274,25 +326,6 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
         keyboardType: keyboardType,
         maxLines: maxLines,
       ),
-    );
-  }
-
-  Widget _buildBottomNavigationBar(int currentIndex) {
-    return BottomNavigationBar(
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
-      ],
-      currentIndex: currentIndex,
-      selectedItemColor: AppColors.button,
-      onTap: (index) {
-        if (index == 1) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageInstituicao()));
-        } else if (index == 2) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AjudaInstituicaoPage()));
-        }
-      },
     );
   }
 
@@ -448,7 +481,7 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
     );
   }
 
-   Widget _buildDrawer(BuildContext context) {
+  Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -531,6 +564,17 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
             },
           ),
           ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
+              );
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.settings, color: AppColors.button),
             title: const Text('Configurações'),
             onTap: () {
@@ -554,11 +598,3 @@ class _PerfilInstituicaoPageState extends State<PerfilInstituicaoPage> {
     );
   }
 }
-
-  ListTile _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.button),
-      title: Text(title),
-      onTap: onTap,
-    );
-  }

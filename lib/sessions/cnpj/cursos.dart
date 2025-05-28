@@ -7,6 +7,7 @@ import 'config.dart';
 import 'home.dart';
 import '../../theme.dart';
 import 'forumcnpj.dart';
+import 'package:flutter_application_1/map.dart';
 
 class CursosInstituicaoPage extends StatefulWidget {
   const CursosInstituicaoPage({Key? key}) : super(key: key);
@@ -538,13 +539,14 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.business),
+          icon: Icon(Icons.person),
           label: 'Perfil',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Início',
         ),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
         BottomNavigationBarItem(
           icon: Icon(Icons.help_outline),
           label: 'Ajuda',
@@ -564,7 +566,13 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
             context,
             MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
           );
-        } else if (index == 2) {
+        }else if( index == 2 ){
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+        
+        } else if (index == 3) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
@@ -653,6 +661,17 @@ class _CursosInstituicaoPageState extends State<CursosInstituicaoPage> {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),

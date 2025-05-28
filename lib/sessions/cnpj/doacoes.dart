@@ -6,7 +6,7 @@ import 'cursos.dart';
 import 'config.dart';
 import 'perfil.dart';
 import 'forumcnpj.dart';
-
+import 'package:flutter_application_1/map.dart';
 class DoacoesInstituicaoPage extends StatelessWidget {
   const DoacoesInstituicaoPage({Key? key}) : super(key: key);
 
@@ -63,50 +63,62 @@ class DoacoesInstituicaoPage extends StatelessWidget {
             _HistoricoTab(),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavigationBar(context, 0),
+        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.person), 
           label: 'Perfil',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home), 
           label: 'Início',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.help),
+          icon: Icon(Icons.location_on),
+          label: 'Mapa',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.help_outline), 
           label: 'Ajuda',
         ),
       ],
-      currentIndex: currentIndex,
+      currentIndex: 0, // Perfil está selecionado
       selectedItemColor: AppColors.button,
       unselectedItemColor: Colors.grey,
       onTap: (int index) {
-        if (index == 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PerfilInstituicaoPage()),
-          );
-        } else if (index == 1) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
-          );
-        } else if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
-          );
+        switch (index) {
+          case 0:
+            // Já está na página de perfil
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
+            );
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
+            );
+            break;
         }
       },
     );
   }
+
 
    Widget _buildDrawer(BuildContext context) {
     return Drawer(
@@ -187,6 +199,17 @@ class DoacoesInstituicaoPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),

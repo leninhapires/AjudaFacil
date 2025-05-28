@@ -6,6 +6,7 @@ import 'doacoes.dart';
 import 'config.dart';
 import 'perfil.dart';
 import 'home.dart';
+import 'package:flutter_application_1/map.dart';
 
 class ForumInstituicaoPage extends StatelessWidget {
   const ForumInstituicaoPage({Key? key}) : super(key: key);
@@ -256,7 +257,7 @@ class ForumInstituicaoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
+ Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -267,8 +268,9 @@ class ForumInstituicaoPage extends StatelessWidget {
           icon: Icon(Icons.home),
           label: 'Início',
         ),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.help),
+          icon: Icon(Icons.help_outline),
           label: 'Ajuda',
         ),
       ],
@@ -277,7 +279,7 @@ class ForumInstituicaoPage extends StatelessWidget {
       unselectedItemColor: Colors.grey,
       onTap: (int index) {
         if (index == 0) {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const PerfilInstituicaoPage()),
           );
@@ -286,8 +288,14 @@ class ForumInstituicaoPage extends StatelessWidget {
             context,
             MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
           );
-        } else if (index == 2) {
-          Navigator.pushReplacement(
+        }else if( index == 2 ){
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+        
+        } else if (index == 3) {
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
           );
@@ -295,7 +303,6 @@ class ForumInstituicaoPage extends StatelessWidget {
       },
     );
   }
-
    Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -375,6 +382,17 @@ class ForumInstituicaoPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),

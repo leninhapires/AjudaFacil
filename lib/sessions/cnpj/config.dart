@@ -7,6 +7,8 @@ import 'config.dart';
 import 'home.dart';
 import '../../theme.dart';
 import 'forumcnpj.dart';
+import 'package:flutter_application_1/map.dart';
+
 
 class ConfiguracoesInstituicaoPage extends StatelessWidget {
   const ConfiguracoesInstituicaoPage({Key? key}) : super(key: key);
@@ -195,43 +197,44 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
   Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.business),
-          label: 'Perfil',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Início',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.help_outline),
-          label: 'Ajuda',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
+        BottomNavigationBarItem(icon: Icon(Icons.help_outline), label: 'Ajuda'),
       ],
-      currentIndex: currentIndex,
+      currentIndex: 1, // Índice do item ativo (Início)
       selectedItemColor: AppColors.button,
       unselectedItemColor: Colors.grey,
       onTap: (int index) {
-        if (index == 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PerfilInstituicaoPage()),
-          );
-        } else if (index == 1) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
-          );
-        } else if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
-          );
+        switch (index) {
+          case 0:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilInstituicaoPage()),
+            );
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePageInstituicao()),
+            );// Já está na tela inicial
+            break;
+          case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
+            );
+            break;
         }
       },
     );
   }
-
    Widget _buildDrawer(BuildContext context) {
     return Drawer(
       child: ListView(
@@ -311,6 +314,17 @@ class ConfiguracoesInstituicaoPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),

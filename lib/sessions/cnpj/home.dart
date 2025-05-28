@@ -6,6 +6,7 @@ import 'doacoes.dart';
 import 'config.dart';
 import '../../theme.dart';
 import 'forumcnpj.dart';
+import 'package:flutter_application_1/map.dart';
 
 class HomePageInstituicao extends StatelessWidget {
   const HomePageInstituicao({Key? key}) : super(key: key);
@@ -15,6 +16,8 @@ class HomePageInstituicao extends StatelessWidget {
     Color(0xFF4285F4), // Azul
     Color(0xFF34A853), // Verde
     Color(0xFFEA4335), // Vermelho
+    Color.fromARGB(255, 53, 53, 234), // Amarelo mostarda
+
   ];
 
   @override
@@ -136,6 +139,23 @@ class HomePageInstituicao extends StatelessWidget {
                 );
               },
             ),
+            const SizedBox(height: 16),
+
+            // Card localizar DOAÇÕES
+            _buildFeatureCard(
+              title: 'PROUCURAR LOCAL PARA DOAÇÃO',
+              description: 'Proucure pessoas ou instituições perto de você para doar.',
+              buttonText: 'Localizar',
+              icon: Icons.maps_home_work_outlined,
+              color: cardColors[3],
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MapaPage()),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             const SizedBox(height: 24),
             
             // Seção de Cursos/Oportunidades
@@ -349,8 +369,9 @@ class HomePageInstituicao extends StatelessWidget {
   Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.business), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
         BottomNavigationBarItem(icon: Icon(Icons.help_outline), label: 'Ajuda'),
       ],
       currentIndex: 1, // Índice do item ativo (Início)
@@ -368,6 +389,12 @@ class HomePageInstituicao extends StatelessWidget {
             // Já está na tela inicial
             break;
           case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AjudaInstituicaoPage()),
@@ -457,6 +484,17 @@ class HomePageInstituicao extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const ForumInstituicaoPage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.map, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),
