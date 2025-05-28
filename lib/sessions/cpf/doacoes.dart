@@ -6,7 +6,8 @@ import 'cursos.dart';
 import 'config.dart';
 import 'perfil.dart';
 import 'forumcpf.dart';
-
+import 'forumcpf.dart';
+import 'package:flutter_application_1/map.dart';
 class DoacoesPage extends StatelessWidget {
   const DoacoesPage({Key? key}) : super(key: key);
 
@@ -61,46 +62,45 @@ class DoacoesPage extends StatelessWidget {
             _HistoricoTab(),
           ],
         ),
-        bottomNavigationBar: _buildBottomNavigationBar(context, 0),
+        bottomNavigationBar: _buildBottomNavigationBar(context),
       ),
     );
   }
 
-  Widget _buildBottomNavigationBar(BuildContext context, int currentIndex) {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Perfil',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Início',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.help),
-          label: 'Ajuda',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
+        BottomNavigationBarItem(icon: Icon(Icons.help_outline), label: 'Ajuda'),
       ],
-      currentIndex: currentIndex,
+      currentIndex: 1, // Índice do item ativo (Início)
       selectedItemColor: AppColors.button,
       unselectedItemColor: Colors.grey,
       onTap: (int index) {
-        if (index == 0) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const PerfilPage()),
-          );
-        } else if (index == 1) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const HomePageCpf()),
-          );
-        } else if (index == 2) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AjudaPage()),
-          );
+        switch (index) {
+          case 0:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const PerfilPage()),
+            );
+            break;
+          case 1:
+            // Já está na tela inicial
+            break;
+          case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaPage()),
+            );
+            break;
         }
       },
     );
@@ -133,7 +133,7 @@ class DoacoesPage extends StatelessWidget {
               ],
             ),
           ),
-          ListTile(
+         ListTile(
             leading: Icon(Icons.home, color: AppColors.button),
             title: const Text('Início'),
             onTap: () {
@@ -184,7 +184,19 @@ class DoacoesPage extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const ForumPage()),
+                MaterialPageRoute(builder: (context) => const ForumPage())
+                
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),
@@ -212,7 +224,6 @@ class DoacoesPage extends StatelessWidget {
     );
   }
 }
-
 class _QueroDoarTab extends StatelessWidget {
   const _QueroDoarTab({Key? key}) : super(key: key);
 

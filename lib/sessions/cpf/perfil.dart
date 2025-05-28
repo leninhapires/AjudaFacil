@@ -3,9 +3,10 @@ import 'ajuda.dart';
 import 'cursos.dart';
 import 'doacoes.dart';
 import 'config.dart';
-import 'forumcpf.dart'; // Corrigi o nome do arquivo
+import 'forumcpf.dart';
 import '../../theme.dart';
 import 'home.dart';
+import 'package:flutter_application_1/map.dart';
 
 class PerfilPage extends StatefulWidget {
   const PerfilPage({Key? key}) : super(key: key);
@@ -51,32 +52,32 @@ class _PerfilPageState extends State<PerfilPage> {
       backgroundColor: AppColors.background,
       drawer: _buildDrawer(context),
       appBar: AppBar(
-  backgroundColor: AppColors.button,
-  centerTitle: true,
-  title: Row(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Image.asset(
-        'assets/image/logo.png',
-        height: 30,
-      ),
-      const SizedBox(width: 8),
-      const Text(
-        'AJUDA FÁCIL',
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+        backgroundColor: AppColors.button,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/image/logo.png',
+              height: 30,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'AJUDA FÁCIL',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 20),
+            Image.asset(
+              'assets/image/cv.png',
+              height: 70,
+            ),
+          ],
         ),
       ),
-      const SizedBox(width: 20),
-      Image.asset(
-        'assets/image/cv.png',
-        height: 70,
-      ),
-    ],
-  ),
-),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -141,7 +142,7 @@ class _PerfilPageState extends State<PerfilPage> {
                   leading: Icon(Icons.security, color: AppColors.button),
                   title: const Text('Privacidade'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.push(
+                  onTap: () => Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const ConfiguracoesPage()),
                   ),
@@ -166,11 +167,10 @@ class _PerfilPageState extends State<PerfilPage> {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavigationBar(0),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 
-  // Métodos auxiliares
   Widget _buildInfoCard({required String title, required List<Widget> children}) {
     return Card(
       elevation: 4,
@@ -180,7 +180,14 @@ class _PerfilPageState extends State<PerfilPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+              title, 
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryText,
+              ),
+            ),
             const SizedBox(height: 12),
             ...children,
           ],
@@ -204,20 +211,40 @@ class _PerfilPageState extends State<PerfilPage> {
     );
   }
 
-  Widget _buildBottomNavigationBar(int currentIndex) {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
-      items: const [
+      items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
+        BottomNavigationBarItem(icon: Icon(Icons.help_outline), label: 'Ajuda'),
       ],
-      currentIndex: currentIndex,
+      currentIndex: 0, // Perfil page is active
       selectedItemColor: AppColors.button,
-      onTap: (index) {
-        if (index == 1) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageCpf()));
-        } else if (index == 2) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AjudaPage()));
+      unselectedItemColor: Colors.grey,
+      onTap: (int index) {
+        switch (index) {
+          case 0:
+            // Already on profile page
+            break;
+          case 1:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomePageCpf()),
+            );
+            break;
+          case 2:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const AjudaPage()),
+            );
+            break;
         }
       },
     );
@@ -234,7 +261,7 @@ class _PerfilPageState extends State<PerfilPage> {
             title: const Text('Tirar Foto'),
             onTap: () {
               Navigator.pop(context);
-              // Implementar câmera
+              // TODO: Implement camera functionality
             },
           ),
           ListTile(
@@ -242,7 +269,7 @@ class _PerfilPageState extends State<PerfilPage> {
             title: const Text('Escolher da Galeria'),
             onTap: () {
               Navigator.pop(context);
-              // Implementar galeria
+              // TODO: Implement gallery functionality
             },
           ),
         ],
@@ -258,7 +285,10 @@ class _PerfilPageState extends State<PerfilPage> {
       endereco = _enderecoController.text;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Alterações salvas com sucesso!')),
+      const SnackBar(
+        content: Text('Alterações salvas com sucesso!'),
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 
@@ -270,20 +300,35 @@ class _PerfilPageState extends State<PerfilPage> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TextFormField(decoration: const InputDecoration(labelText: 'Senha Atual'), obscureText: true),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Senha Atual'),
+              obscureText: true,
+            ),
             const SizedBox(height: 16),
-            TextFormField(decoration: const InputDecoration(labelText: 'Nova Senha'), obscureText: true),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Nova Senha'),
+              obscureText: true,
+            ),
             const SizedBox(height: 16),
-            TextFormField(decoration: const InputDecoration(labelText: 'Confirmar Nova Senha'), obscureText: true),
+            TextFormField(
+              decoration: const InputDecoration(labelText: 'Confirmar Nova Senha'),
+              obscureText: true,
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Senha alterada com sucesso!')),
+                const SnackBar(
+                  content: Text('Senha alterada com sucesso!'),
+                  duration: Duration(seconds: 2),
+                ),
               );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.button),
@@ -301,11 +346,14 @@ class _PerfilPageState extends State<PerfilPage> {
         title: const Text('Sair da Conta'),
         content: const Text('Tem certeza que deseja sair?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
           ElevatedButton(
             onPressed: () {
               Navigator.popUntil(context, (route) => route.isFirst);
-              // Adicionar lógica de logout aqui
+              // TODO: Add logout logic
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('Sair'),
@@ -323,23 +371,84 @@ class _PerfilPageState extends State<PerfilPage> {
           DrawerHeader(
             decoration: BoxDecoration(color: AppColors.button),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('AJUDA FÁCIL', style: TextStyle(color: Colors.white, fontSize: 24)),
+                Text(
+                  'AJUDA FÁCIL',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 8),
-                Text('Bem-vindo, $nome', style: TextStyle(color: Colors.white)),
+                Text(
+                  'Bem-vindo, $nome',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ],
             ),
           ),
-          _buildDrawerItem(Icons.home, 'Início', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomePageCpf()))),
-          _buildDrawerItem(Icons.person, 'Perfil', () => Navigator.pop(context)), // Já está no perfil
-          _buildDrawerItem(Icons.school, 'Cursos', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CursosPage()))),
-          _buildDrawerItem(Icons.volunteer_activism, 'Doações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const DoacoesPage()))),
-          _buildDrawerItem(Icons.forum, 'Fórum', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ForumPage()))),
-          _buildDrawerItem(Icons.settings, 'Configurações', () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ConfiguracoesPage()))),
+          _buildDrawerItem(
+            Icons.home,
+            'Início',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const HomePageCpf()),
+            ),
+          ),
+          _buildDrawerItem(
+            Icons.person,
+            'Perfil',
+            () => Navigator.pop(context), // Already on profile page
+          ),
+          _buildDrawerItem(
+            Icons.school,
+            'Cursos',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const CursosPage()),
+            ),
+          ),
+          _buildDrawerItem(
+            Icons.volunteer_activism,
+            'Doações',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const DoacoesPage()),
+            ),
+          ),
+          _buildDrawerItem(
+            Icons.forum,
+            'Fórum',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ForumPage()),
+            ),
+          ),
+          _buildDrawerItem(
+            Icons.location_on,
+            'Mapa',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const MapaPage()),
+            ),
+          ),
+          _buildDrawerItem(
+            Icons.settings,
+            'Configurações',
+            () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const ConfiguracoesPage()),
+            ),
+          ),
           const Divider(),
-          _buildDrawerItem(Icons.exit_to_app, 'Sair', _confirmarLogout),
+          _buildDrawerItem(
+            Icons.exit_to_app,
+            'Sair',
+            _confirmarLogout,
+          ),
         ],
       ),
     );

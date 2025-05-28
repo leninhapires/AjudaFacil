@@ -6,6 +6,7 @@ import 'doacoes.dart';
 import 'config.dart';
 import '../../theme.dart';
 import 'forumcpf.dart';
+import 'package:flutter_application_1/map.dart';
 
 class HomePageCpf extends StatelessWidget {
   const HomePageCpf({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class HomePageCpf extends StatelessWidget {
     Color(0xFF4285F4), // Azul
     Color(0xFF34A853), // Verde
     Color(0xFFEA4335), // Vermelho
+    Color.fromARGB(255, 53, 53, 234),
   ];
 
   @override
@@ -129,6 +131,23 @@ class HomePageCpf extends StatelessWidget {
                 );
               },
             ),
+            const SizedBox(height: 16),
+
+            // Card localizar DOAÇÕES
+            _buildFeatureCard(
+              title: 'PROUCURAR LOCAL PARA DOAÇÃO',
+              description: 'Proucure pessoas ou instituições perto de você para doar.',
+              buttonText: 'Localizar',
+              icon: Icons.maps_home_work_outlined,
+              color: cardColors[3],
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MapaPage()),
+                );
+              },
+            ),
+            const SizedBox(height: 16),
             const SizedBox(height: 24),
             
             // Prévia do Fórum
@@ -285,7 +304,8 @@ class HomePageCpf extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Perfil'),
         BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Início'),
-        BottomNavigationBarItem(icon: Icon(Icons.help), label: 'Ajuda'),
+        BottomNavigationBarItem(icon: Icon(Icons.location_on), label: 'Mapa'),
+        BottomNavigationBarItem(icon: Icon(Icons.help_outline), label: 'Ajuda'),
       ],
       currentIndex: 1, // Índice do item ativo (Início)
       selectedItemColor: AppColors.button,
@@ -302,6 +322,12 @@ class HomePageCpf extends StatelessWidget {
             // Já está na tela inicial
             break;
           case 2:
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MapaPage()),
+            );
+            break;
+          case 3:
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const AjudaPage()),
@@ -339,7 +365,7 @@ class HomePageCpf extends StatelessWidget {
               ],
             ),
           ),
-          ListTile(
+         ListTile(
             leading: Icon(Icons.home, color: AppColors.button),
             title: const Text('Início'),
             onTap: () {
@@ -390,7 +416,19 @@ class HomePageCpf extends StatelessWidget {
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => const ForumPage()),
+                MaterialPageRoute(builder: (context) => const ForumPage())
+                
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.location_on, color: AppColors.button),
+            title: const Text('Mapa de Ajuda'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MapaPage()),
               );
             },
           ),
