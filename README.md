@@ -1,6 +1,7 @@
-🌟 Ajuda Fácil - Projeto Hackathon Unicesumar & Google
+***o projeto se encontra na branch master***
+🌟 Ajuda Fácil - Projeto Hackathon Unicesumar & Google 
 Logo do Ajuda Fácil
-**o projeto se encontra na branch master
+
 📱 Sobre o Projeto
 Ajuda Fácil é um aplicativo desenvolvido durante o Hackathon Unicesumar em parceria com a Google, com o objetivo de conectar pessoas que precisam de ajuda com aquelas que desejam ajudar, criando uma rede de solidariedade e apoio mútuo.
 
@@ -39,13 +40,7 @@ Página Inicial	Categorias de Ajuda	Fórum Comunitário
 👨‍💻 Equipe de Desenvolvimento
 Conheça o time por trás do Ajuda Fácil:
 
-Líder Técnico: Francilene - @seuuser
-
-UX/UI Designer: [Nome] - @user
-
-Desenvolvedor Flutter: [Nome] - @user
-
-Gerente de Projeto: [Nome] - @user
+Francilene de Souza | Lucas breno | Lucas Lima | Andrei Santos
 
 🌍 Impacto Social
 Nosso objetivo é impactar positivamente a vida de milhares de pessoas através da tecnologia:
