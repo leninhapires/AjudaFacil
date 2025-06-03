@@ -1,6 +1,10 @@
 ***o projeto se encontra na branch master***
 🌟 Ajuda Fácil - Projeto Hackathon Unicesumar & Google 
+<<<<<<< HEAD
 Logo do Ajuda Fácil
+=======
+![Logo do projeto](assets/image/logo.png)
+>>>>>>> 819d41b (imagens/readme)
 É importante destacar que o código, por si só, não realiza chamadas às APIs do Google, pois requer a chave (key). Dessa forma, evita-se conflitos na compilação do aplicativo.
 📱 Sobre o Projeto
 Ajuda Fácil é um aplicativo desenvolvido durante o Hackathon Unicesumar em parceria com a Google, com o objetivo de conectar pessoas que precisam de ajuda com aquelas que desejam ajudar, criando uma rede de solidariedade e apoio mútuo.
@@ -34,9 +38,15 @@ Flutter Flutter	Framework para desenvolvimento multiplataforma
 Firebase Firebase	Backend e autenticação
 Google Cloud Google Cloud	Hospedagem e serviços em nuvem
 Figma Figma	Design de interface e prototipação
+<<<<<<< HEAD
 📸 Capturas de Tela
 Tela 1	Tela 2	Tela 3
 Página Inicial	Categorias de Ajuda	Fórum Comunitário
+=======
+
+
+
+>>>>>>> 819d41b (imagens/readme)
 👨‍💻 Equipe de Desenvolvimento
 Conheça o time por trás do Ajuda Fácil:
 
