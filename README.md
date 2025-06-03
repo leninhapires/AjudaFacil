@@ -1,7 +1,9 @@
 # 🌟 Ajuda Fácil - Projeto Hackathon Unicesumar & Google  
 **📌 O projeto se encontra na branch `master`**
 
-![Logo do projeto](assets/image/logo.png)
+<p align="center">
+  <img src="assets/image/logo.png" alt="Logo do projeto" width="200"/>
+</p>
 
 > ⚠️ **Importante:** O código deste repositório **não realiza chamadas diretas às APIs do Google** sem a chave de autenticação (`key`). Isso evita conflitos durante a compilação do aplicativo.
 
