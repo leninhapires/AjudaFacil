@@ -50,7 +50,12 @@
 
 | Página Inicial | Categorias de Ajuda | Fórum Comunitário |
 |----------------|---------------------|-------------------|
-| ![Tela 1](assets/image/tela1.png) | ![Tela 2](assets/image/tela2.png) | ![Tela 3](assets/image/tela3.png) |
+|<p align="center">
+  <img src="assets/image/tela1.png" alt="Página Inicial" width="200"/>
+  <img src="assets/image/tela2.png" alt="Categorias de Ajuda" width="200"/>
+  <img src="assets/image/tela3.png" alt="Fórum Comunitário" width="200"/>
+</p>
+ |
 
 > *(Imagens de exemplo - substitua com as capturas reais)*
 
