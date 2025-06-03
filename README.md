@@ -49,15 +49,10 @@
 ## 📸 Capturas de Tela
 
 | Página Inicial | Categorias de Ajuda | Fórum Comunitário |
-|----------------|---------------------|-------------------|
-|<p align="center">
-  <img src="assets/image/tela1.png" alt="Página Inicial" width="200"/>
-  <img src="assets/image/tela2.png" alt="Categorias de Ajuda" width="200"/>
-  <img src="assets/image/tela3.png" alt="Fórum Comunitário" width="200"/>
-</p>
- |
+|----------------|--------------------|-------------------|
+| ![Página Inicial](assets/image/tela1.png) | ![Categorias de Ajuda](assets/image/tela2.png) | ![Fórum Comunitário](assets/image/tela3.png) |
 
-> *(Imagens de exemplo - substitua com as capturas reais)*
+
 
 ---
 
