@@ -42,7 +42,7 @@
 | Flutter       | Framework para desenvolvimento multiplataforma |
 | Firebase      | Backend e autenticação                   |
 | Google Cloud  | Hospedagem e serviços em nuvem           |
-| Figma         | Design de interface e prototipação       |
+| Canva         | Design de interface e prototipação       |
 
 ---
 
